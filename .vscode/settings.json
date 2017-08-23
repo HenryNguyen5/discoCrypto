@@ -1,0 +1,17 @@
+{
+	"vsicons.presets.angular": true,
+	"files.exclude": {
+		"**/.git": true,
+		"**/.DS_Store": true,
+		"**/*.js.map": true,
+		"**/*.js": { "when": "$(basename).ts" },
+		"**/*.map": { "when": "$(basename).map" }
+	},
+	"files.associations": {
+		"istream": "cpp",
+		"type_traits": "cpp",
+		"utility": "cpp",
+		"xlocnum": "cpp",
+		"xstring": "cpp"
+	}
+}
