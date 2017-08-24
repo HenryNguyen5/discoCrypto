@@ -1,5 +1,9 @@
 const ngo = () => {
-	return 'NO COINERS GET OUT'
+	return `:middle_finger: 
+:no_entry_sign: :no_entry_sign: :no_entry_sign:
+NO COINERS GET OUT
+:poop: :poop: :poop:
+:thumbsdown:`
 }
 const help = () => {
 	const helpObj = {
