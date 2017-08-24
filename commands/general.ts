@@ -1,10 +1,3 @@
-const ngo = () => {
-	return `:middle_finger: 
-:no_entry_sign: :no_entry_sign: :no_entry_sign:
-NO COINERS GET OUT
-:poop: :poop: :poop:
-:thumbsdown:`
-}
 const help = () => {
 	const helpObj = {
 		'.cmc': {
@@ -15,8 +8,12 @@ const help = () => {
 		},
 		'.gen': {
 			h: 'help'
+		},
+		'.meme': {
+			n: 'ngo',
+			s: 'spec'
 		}
 	}
 	return helpObj
 }
-export default { ngo, help }
+export default { help }
