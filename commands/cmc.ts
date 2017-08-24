@@ -17,6 +17,14 @@ const stats = async () => {
 }
 const updateCmcCache = async () => {
 	const coinArray = await cmc.get('/ticker')
+	.then(async allcoins => {
+		const ethBtcPrice = await cmc.get('/ticker/ethereum')
+			.then( ([{price_btc}]) => price_btc)
+		return allcoins.map( coin => ({
+			...coin, 
+			price_eth: `${(parseFloat(coin.price_btc)/parseFloat(ethBtcPrice)).toFixed(8)}`
+		}) )
+	})
 	tickerCache = coinArray.reduce((prevValue, currentValue) => {
 		return { ...prevValue, [currentValue.id]: currentValue }
 	}, {})
