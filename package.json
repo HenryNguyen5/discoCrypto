@@ -1,0 +1,26 @@
+{
+  "name": "discocrypto",
+  "version": "1.0.0",
+  "description": "A discord bot meant to serve crypto-currency related data.",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "^11.1.0",
+    "request": "^2.81.0",
+    "request-promise-native": "^1.0.4",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HenryNguyen5/discoCrypto.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HenryNguyen5/discoCrypto/issues"
+  },
+  "homepage": "https://github.com/HenryNguyen5/discoCrypto#readme"
+}
