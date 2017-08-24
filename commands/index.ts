@@ -1,7 +1,8 @@
 import cmc from './cmc'
 import gen from './general'
+import meme from './meme'
 
-const commandObj = { cmc, gen }
+const commandObj = { cmc, gen, meme }
 const PREFIX = '.'
 
 const preFixedCommandObj = Object.keys(
