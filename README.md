@@ -9,6 +9,8 @@ A discord bot meant to serve crypto-currency related data.
     - s  -- alias for stats
     - ticker <TICKER|SYMBOL> -- Serves specific data about a coin
     - t --alias for ticker 
-
+- .gen
+    - h help
+    
 ## Example command 
 .cmc -t dnt 

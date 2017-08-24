@@ -1,6 +1,7 @@
 import cmc from './cmc'
-import * as YAML from 'yamljs'
-const commandObj = { cmc }
+import gen from './general'
+
+const commandObj = { cmc, gen }
 const PREFIX = '.'
 
 const preFixedCommandObj = Object.keys(
@@ -14,7 +15,7 @@ const commandHandler = async command => {
 	if (!preFixedCommandObj[commandName]) return null
 
 	const result = preFixedCommandObj[commandName][option]
-	return result ? YAML.stringify(await result(rest)) : null
+	return result(rest)
 }
 
 export default commandHandler
