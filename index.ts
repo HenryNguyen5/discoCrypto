@@ -19,9 +19,12 @@ client.on('ready', () => {
 client.on('message', async message => {
 	try {
 		const result = await commands(message.content)
+		console.log('Result', result)
 		const parsedResult =
 			typeof result === 'object' ? YAML.stringify(result) : result
-		result && message.reply(`\n${parsedResult}`)
+		result &&
+			message.channel.send(`\n
+		${parsedResult}`)
 	} catch (error) {
 		console.error(error)
 	}
