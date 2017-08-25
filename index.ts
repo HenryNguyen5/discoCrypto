@@ -3,6 +3,7 @@ import envLoader from './util/env-loader'
 import discordConfig from './config'
 import commands from './commands'
 import * as YAML from 'yamljs'
+import db from './db'
 
 const { DISCORD_TOKEN } = envLoader(discordConfig)
 if (!DISCORD_TOKEN) {
@@ -12,19 +13,24 @@ if (!DISCORD_TOKEN) {
 
 const client = new Discord.Client()
 
-client.on('ready', () => {
+client.on('ready', async () => {
+	await db()
 	console.log('I am ready!')
+	client.user.setGame('watching for nocoiners')
 })
 
 client.on('message', async message => {
 	try {
-		const result = await commands(message.content)
+		console.log(message.author.username)
+		const result = await commands(
+			`${message.content} ${message.author.username}`
+		).catch(e => console.error('Error:', e))
+
 		console.log('Result', result)
-		const parsedResult =
-			typeof result === 'object' ? YAML.stringify(result) : result
+
 		result &&
 			message.channel.send(`\n
-		${parsedResult}`)
+		${result}`)
 	} catch (error) {
 		console.error(error)
 	}

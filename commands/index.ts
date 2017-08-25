@@ -1,7 +1,7 @@
 import cmc from './cmc'
 import gen from './general'
-
-const commandObj = { cmc, gen }
+import personal from './personal'
+const commandObj = { cmc, gen, per: personal }
 const PREFIX = '.'
 
 const preFixedCommandObj = Object.keys(
@@ -15,6 +15,7 @@ const commandHandler = async command => {
 	if (!preFixedCommandObj[commandName]) return null
 
 	const result = preFixedCommandObj[commandName][option]
+	console.log(result)
 	return result(rest)
 }
 

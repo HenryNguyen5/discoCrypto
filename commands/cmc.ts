@@ -35,6 +35,7 @@ const updateCmcCache = async () => {
 	}, {})
 }
 const lookupBySymbol = (rest: [string]) => {
+	console.log('lookupBySymbol', rest)
 	try {
 		let [symbol] = rest
 		symbol = symbol.toUpperCase()
@@ -70,15 +71,59 @@ const formatData = data => {
 	const percentFormat = format({ suffix: '%' })
 	const formattedString = `
 		:rocket:${rank}	${name}	${symbol}:rocket:
+
 		USD: ${dollarFormat(price_usd)}
 		BTC: ${format()(price_btc)}
 		ETH: ${format()(price_eth)}
+
 		1 Hour: ${percentFormat(percent_change_1h)}
 		24 Hours: ${percentFormat(percent_change_24h)}
 		7 Days: ${percentFormat(percent_change_7d)}
 		Market Cap: ${dollarFormat(market_cap_usd)}
 		`
 	return formattedString
+}
+const formatList = (data, unitsOwned) => {
+	const {
+		name,
+		symbol,
+		rank,
+		price_usd,
+		price_btc,
+		price_eth,
+		percent_change_7d,
+		percent_change_1h,
+		percent_change_24h,
+		market_cap_usd
+	} = data
+
+	const dollarFormat = format({ prefix: '$' })
+	const percentFormat = format({ suffix: '%' })
+	const ethFormat = format({ prefix: 'Ξ' })
+	const btcFormat = format({ prefix: 'Ƀ' })
+	const formattedString = `:rocket:${rank}	${name}	${symbol}
+		USD: ${dollarFormat(price_usd)} * ${unitsOwned} = ${dollarFormat(
+		price_usd * unitsOwned
+	)}
+		BTC: ${format()(price_btc)} * ${unitsOwned} = ${btcFormat(
+		price_btc * unitsOwned
+	)}
+		ETH: ${format()(price_eth)} * ${unitsOwned} = ${ethFormat(
+		price_eth * unitsOwned
+	)}
+		24 Hours: ${percentFormat(percent_change_24h)}
+		`
+	return formattedString
+}
+const listTicker = rest => {
+	const result = lookupBySymbol(rest) || lookupByTicker(rest) || null
+	console.log('listTicker', rest)
+	return result ? formatList(result, rest[1]) : null
+}
+const rawTickerData = query => {
+	const result = lookupBySymbol([query]) || lookupByTicker([query]) || null
+
+	return result ? result : null
 }
 const ticker = rest => {
 	const result = lookupBySymbol(rest) || lookupByTicker(rest) || null
@@ -93,4 +138,4 @@ setInterval(() => {
 	updateCmcCache()
 }, MINUTE)
 
-export default { stats, s: stats, ticker, t: ticker }
+export default { stats, s: stats, ticker, t: ticker, rawTickerData, listTicker }
