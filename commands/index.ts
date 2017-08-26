@@ -12,7 +12,9 @@ const preFixedCommandObj = Object.keys(
 
 const commandHandler = async command => {
 	const [commandName, option, ...rest] = command.split(' ')
-	if (!preFixedCommandObj[commandName]) return null
+	if (!preFixedCommandObj[commandName]) {
+		return null
+	}
 
 	const result = preFixedCommandObj[commandName][option]
 	console.log(result)

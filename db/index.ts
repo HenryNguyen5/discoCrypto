@@ -1,12 +1,11 @@
-const connect = require('camo').connect
-import path = require('path')
-const uri = `nedb:///${path.join(__dirname, '/store')}/`
+import * as mongoose from 'mongoose'
 
-const connectToDb = async () => {
-	const db = await connect(uri)
+const connectToDb = async (MONGODB_URI: string) => {
+	mongoose.Promise = Promise // tslint:disable-line
+
+	console.log(MONGODB_URI)
+	await mongoose.connect(MONGODB_URI).catch(e => console.error('DB ERROR: ', e))
 	console.log('Connected to db!')
-	console.log(`nedb:///${path.join(__dirname, '/store')}/`)
-	return db
 }
 
 export default connectToDb
