@@ -9,7 +9,7 @@ interface ContributorEntry {
 interface Contributors {
     contributors: Array<ContributorEntry>
 }
-interface ICO {
+interface ICOEntry {
     name: string
     total: number
     currency: string
@@ -17,7 +17,7 @@ interface ICO {
     contributors: Contributors
 }
 interface ICOs {
-    icos: Array<ICO>
+    icos: Array<ICOEntry>
 }
 interface spreadsheets {
     [index: string]: any
@@ -39,23 +39,65 @@ class ICOdocs extends CamoDoc<spreadsheets> {
         return newICO.save()
     }
 
-    public async addContrib(contrib: ContributorEntry) {
+    public async addContrib(  contrib: ContributorEntry, ico: ICOEntry  ) {
         const { name: contribName, amount: contribAmount } = contrib
-        if (!contribName || !contribAmount)
+        const { name: icoName } = ico
+        if (!contribName || !contribAmount || !icoName)
             throw new Error('Invalid params to addContrib')
 
         let found = false
+        this.ICOs = this.ICOs.map(currentICO => {
+            const { name: name} = currentICO
+            if (name === icoName){
+                found = true
+                return {..}
+            }
+        })
         this.ICOs = this.ICOs.map(currentContrib => {
             const { name: name } = currentContrib
             if (name === contribName){
                 found = true
-                return {...currentContrib, }
+                return {...currentContrib, amount: contribAmount}
             } else {
                 return currentContrib
             }
         })
         if (!found) {
             this.ICOs = [...this.ICOs, contrib]
+        }
+        return this.save()
+    }
+
+    public async removeContrib(contrib: ContributorEntry) {
+        const { name: contribName } = contrib
+        if (!contribName)
+            throw new Error('Invalid params to removeContrib')
+
+        let found = false
+        this.ICOs = this.ICOs.filter(
+            ({ contributor: { name, amount } }) =>
+                name !== contribName
+        )
+        return this.save()
+    }
+
+    public async updateContrib(contrib: ContributorEntry) {
+        const { name: contribName, amount: contribAmount } = contrib
+        if (!contribName || ! contribAmount)
+            throw new Error('Invalid params to updateContrib')
+
+        let found = false
+        this.ICOs = this.ICOs.map(currentContrib => {
+            const { contrib: { name, amount } } = currentContrib
+            if (name === contribName) { 
+                found = true
+                return { ...currentContrib, amount: contribAmount }
+            } else {
+                return currentContrib
+            }
+        })
+        if (!found) {
+            this.addContrib(contrib)
         }
         return this.save()
     }
