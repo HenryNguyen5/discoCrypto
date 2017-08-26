@@ -1,11 +1,10 @@
 import * as Discord from 'discord.js'
-import envLoader from './util/env-loader'
-import discordConfig from './config'
 import commands from './commands'
-import * as YAML from 'yamljs'
+import discordConfig from './config'
 import db from './db'
+import envLoader from './util/env-loader'
 
-const { DISCORD_TOKEN } = envLoader(discordConfig)
+const { DISCORD_TOKEN, MONGODB_URI } = envLoader(discordConfig)
 if (!DISCORD_TOKEN) {
 	console.log('No discord token found, exiting...')
 	process.exit()
@@ -14,7 +13,7 @@ if (!DISCORD_TOKEN) {
 const client = new Discord.Client()
 
 client.on('ready', async () => {
-	await db()
+	await db(MONGODB_URI)
 	console.log('I am ready!')
 	client.user.setGame('watching for nocoiners')
 })
@@ -28,9 +27,11 @@ client.on('message', async message => {
 
 		console.log('Result', result)
 
-		result &&
-			message.channel.send(`\n
-		${result}`)
+		if (!result) {
+			return
+		}
+
+		message.channel.send(`\n${result}`)
 	} catch (error) {
 		console.error(error)
 	}
