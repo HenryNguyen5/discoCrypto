@@ -47,47 +47,35 @@ IcoSchema.statics.deleteIco = async function(name: string): Promise<null> {
 	return this.remove({ name: name.toLowerCase() })
 }
 IcoSchema.statics.findIcoByName = async function(name: string): Promise<IIco> {
-	return await this.findOne({ name: name.toLowerCase() })
+	return this.findOne({ name: name.toLowerCase() })
 }
 
 IcoSchema.methods.addMember = async function(entry: IIcoEntry): Promise<IIco> {
 	const { name, amount, returnAddress, txid = null } = entry
+	const nameLowerCase = name.toLowerCase()
 	let found = false
 	const amountNumber = parseFloat(amount)
-	if (!name || !amountNumber || !returnAddress) {
+	if (!nameLowerCase || !amountNumber || !returnAddress) {
 		throw new Error('Invalid params to addMember')
 	}
-	if (+amountNumber < this.minAmount) {
+	if (amountNumber < this.minAmount) {
 		throw new Error('addMember: Contribution amount too low')
 	}
-	if (+amountNumber + this.currentAmount > this.maxAmount) {
+	if (amountNumber + this.currentAmount > this.maxAmount) {
 		throw new Error('addMember: Contribution amount exceeds max cap')
 	}
-	console.log('currentAmount:', this.currentAmount)
-	console.log('added amount:', amountNumber)
 	this.currentAmount += amountNumber
 
 	this.members = this.members.map(currentEntry => {
 		const { name: currentName, amount: currContribAmount } = currentEntry
-		if (currentName === name) {
-			console.log(
-				'currentAmount in loop:',
-				this.currentAmount,
-				typeof this.currentAmount
-			)
-			console.log(
-				'currContribAmount in loop:',
-				currContribAmount,
-				typeof currContribAmount
-			)
+		if (currentName === nameLowerCase) {
 			this.currentAmount -= currContribAmount
-
 			found = true
 			return entry
 		}
 		return currentEntry
 	})
-	console.log('after', this.currentAmount)
+
 	if (!found) {
 		this.members = [...this.members, entry]
 	}
@@ -101,7 +89,7 @@ IcoSchema.methods.removeMember = async function(name: string): Promise<IIco> {
 
 	this.members = this.members.filter(
 		({ name: currentName, amount: currContribAmount }) => {
-			const deleteMember = name === currentName
+			const deleteMember = name.toLowerCase() === currentName
 			if (deleteMember) {
 				this.currentAmount -= currContribAmount
 			}
