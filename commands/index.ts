@@ -1,7 +1,8 @@
 import cmc from './cmc'
 import gen from './general'
+import ico from './ico'
 import personal from './personal'
-const commandObj = { cmc, gen, per: personal }
+const commandObj = { cmc, gen, per: personal, ico }
 const PREFIX = '.'
 
 const preFixedCommandObj = Object.keys(
