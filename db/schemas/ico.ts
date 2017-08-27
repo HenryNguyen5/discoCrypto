@@ -81,7 +81,9 @@ IcoSchema.methods.addMember = async function(entry: IIcoEntry): Promise<IIco> {
 				typeof currContribAmount
 			)
 			this.currentAmount -= currContribAmount
+
 			found = true
+			return entry
 		}
 		return currentEntry
 	})
