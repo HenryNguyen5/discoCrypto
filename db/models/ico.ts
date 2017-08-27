@@ -27,6 +27,7 @@ export interface IIco extends Document {
 	members: [IIcoEntry]
 	addMember: (entry: IIcoEntry) => Promise<IIco>
 	removeMember: (name: string) => Promise<IIco>
+	confirmTx: (txid: string, name: string) => Promise<IIco>
 }
 
 export interface IIcoModel extends Model<IIco> {

@@ -1,7 +1,9 @@
 const format = require('format-number') // tslint:disable-line
 
-export const formatMembers = ({ amount, name, returnAddress }) => {
-	return `${name} ${amount} ${returnAddress}\n`
+export const formatMembers = ({ amount, name, returnAddress, txid = null }) => {
+	return `${name} ${amount} ${returnAddress} ${txid
+		? `:ballot_box_with_check:${txid}`
+		: ':octagonal_sign:'}\n`
 }
 
 export const formatIco = ({

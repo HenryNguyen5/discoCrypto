@@ -61,9 +61,6 @@ IcoSchema.methods.addMember = async function(entry: IIcoEntry): Promise<IIco> {
 	if (amountNumber < this.minAmount) {
 		throw new Error('addMember: Contribution amount too low')
 	}
-	if (amountNumber + this.currentAmount > this.maxAmount) {
-		throw new Error('addMember: Contribution amount exceeds max cap')
-	}
 	this.currentAmount += amountNumber
 
 	this.members = this.members.map(currentEntry => {
@@ -80,6 +77,26 @@ IcoSchema.methods.addMember = async function(entry: IIcoEntry): Promise<IIco> {
 		this.members = [...this.members, entry]
 	}
 
+	if (this.currentAmount > this.maxAmount) {
+		throw new Error('addMember: Contribution amount exceeds max cap')
+	}
+	return this.save()
+}
+IcoSchema.methods.confirmTx = async function(
+	txid: string,
+	name: string
+): Promise<IIco> {
+	const nameLowerCase = name.toLowerCase()
+	this.members = this.members.map(currentEntry => {
+		const { name: currentName } = currentEntry
+		console.log({ ...currentEntry.toJSON() })
+		console.log('\n')
+		if (currentName === nameLowerCase) {
+			// console.log('expanding txid', { ...currentEntry, txid })
+			return { ...currentEntry.toJSON(), txid }
+		}
+		return currentEntry
+	})
 	return this.save()
 }
 IcoSchema.methods.removeMember = async function(name: string): Promise<IIco> {

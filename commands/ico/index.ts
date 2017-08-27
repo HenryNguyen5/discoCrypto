@@ -32,7 +32,13 @@ const removeMember = async ([icoName, name]) => {
 	}
 	return console.log(ico.removeMember(name))
 }
-
+const confirmTx = async ([icoName, txid, name]) => {
+	const ico = await Ico.findIcoByName(icoName)
+	if (!ico) {
+		return null
+	}
+	return console.log(ico.confirmTx(txid, name))
+}
 const displayIco = async ([icoName]) => {
 	const ico = await Ico.findIcoByName(icoName)
 	return formatIco(ico)
@@ -50,5 +56,6 @@ export default {
 	list: listIcos,
 	display: displayIco,
 	leave: removeMember,
-	join: addMember
+	join: addMember,
+	confirmTx
 }
