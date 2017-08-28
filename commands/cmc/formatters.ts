@@ -44,16 +44,10 @@ const formatList = (data, unitsOwned: number) => {
 	const percentFormat = format({ suffix: '%' })
 	const ethFormat = format({ prefix: 'Ξ' })
 	const btcFormat = format({ prefix: 'Ƀ' })
-	const formattedString = `:rocket:${rank}	${name}	${symbol}
-		USD: ${dollarFormat(price_usd)} * ${unitsOwned} = ${dollarFormat(
-		price_usd * unitsOwned
-	)}
-		BTC: ${format()(price_btc)} * ${unitsOwned} = ${btcFormat(
-		price_btc * unitsOwned
-	)}
-		ETH: ${format()(price_eth)} * ${unitsOwned} = ${ethFormat(
-		price_eth * unitsOwned
-	)}
+	const formattedString = `:rocket:${rank}	${name}	${symbol} Owned:${unitsOwned} 
+		USD: ${dollarFormat(price_usd)} = ${dollarFormat(price_usd * unitsOwned)}
+		BTC: ${format()(price_btc)} = ${btcFormat(price_btc * unitsOwned)}
+		ETH: ${format()(price_eth)} = ${ethFormat(price_eth * unitsOwned)}
 		24 Hours: ${percentFormat(percent_change_24h)}
 		`
 	return formattedString
