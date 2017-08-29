@@ -28,15 +28,16 @@ const createPortfolioMessage = (portfolio, username) => {
     const flatten  = (list) => {
         return Array.prototype.concat(...list)
     }
-    return truncate(flatten(portfolio), username)
+    let array = new Array()
+    truncate(flatten(portfolio), username,array)
+    return array
 }
 
-const truncate  = (_fieldList, user) => {
-    if (_fieldList.length < 25)
-        return [ { embed: { title: `${user}'s Portfolio`, fields: _fieldList }, personal: true } ]
-    
-    return [ { embed: { title: `${user}'s Portfolio`, fields: _fieldList.slice(0, 24) }, personal: true },
-             { embed: { fields: _fieldList.slice(24) }, personal: true }  ]
+const truncate = (_fieldList, user, array) => {
+    array.push({ embed: { title: `${user}'s Portfolio`, fields: _fieldList }, personal: true })
+    if (_fieldList.length > 24 )
+        truncate(_fieldList.slice(24), user, array)
+    return array
 }
 
 const portfolioEmbed = (port, unitsOwned: number) => {
