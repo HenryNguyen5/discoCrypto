@@ -25,7 +25,10 @@ export const formatIco = ({
 	let arr = [
 		{
 			name: `${name}     ${amountType}:${currentAmount}`,
-			value: `Contribution Addr: ${contributionAddress}\nMin Contribution Amount: ${minAmount}\nContribution Cap: ${maxAmount}`
+			value: `
+Contribution Addr: ${contributionAddress}
+Min Contribution Amount: ${minAmount}
+Contribution Cap: ${maxAmount}`
 		},
 		memberString
 
@@ -42,7 +45,10 @@ export const shortFormatIco = ({
 	minAmount
 }) => {
 	return { name: `${name}     ${amountType}:${currentAmount}`,
-			value: `Contribution Addr: ${contributionAddress}\nMin Contribution Amount: ${minAmount}\nContribution Cap: ${maxAmount}` }
+			value: `
+Contribution Addr: ${contributionAddress}
+Min Contribution Amount: ${minAmount}
+Contribution Cap: ${maxAmount}` }
 }
 
 export const returnAsEmbed = (fields) => {

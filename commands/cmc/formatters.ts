@@ -55,18 +55,17 @@ const portfolioEmbed = (port, unitsOwned: number) => {
     return [
         {
             name: `:rocket:${port.rank}    ${port.name}  ${port.symbol}`,
-            value: `Units Owned: ${unitsOwned}`
+            value: `
+Units Owned: ${unitsOwned}`
         },
         {
             name: `Market Values`,
-            value: `USD: ${formatting.dollarFormat(
-                port.price_usd)} | ${formatting.dollarFormat(
-            port.price_usd * unitsOwned)}\nBTC: ${formatting.btcFormat(
-                port.price_btc)} | ${formatting.btcFormat(
-                port.price_btc * unitsOwned)}\nETH: ${formatting.ethFormat(
-                    port.price_eth)} | ${formatting.ethFormat(
-                    port.price_eth * unitsOwned)}\n\n24 Hour Change: ${formatting.percentFormat(
-                        port.percent_change_24h)}`
+            value: `
+USD: ${formatting.dollarFormat(port.price_usd)} | ${formatting.dollarFormat(port.price_usd * unitsOwned)}
+BTC: ${formatting.btcFormat(port.price_btc)} | ${formatting.btcFormat(port.price_btc * unitsOwned)}
+ETH: ${formatting.ethFormat(port.price_eth)} | ${formatting.ethFormat(port.price_eth * unitsOwned)}
+
+24 Hour Change: ${formatting.percentFormat(port.percent_change_24h)}`
         }
     ]
 }
@@ -77,18 +76,22 @@ const tickerEmbed = (coin: coin) => {
         fields: [
             {
                 name: `Market Values`,
-                value: `USD: ${formatting.dollarFormat(
-                    coin.price_usd)}\nETH: ${formatting.ethFormat(
-                        coin.price_eth)}\nBTC: ${formatting.btcFormat(
-                            coin.price_btc)}`
+                value: `
+USD: ${formatting.dollarFormat(coin.price_usd)}
+ETH: ${formatting.ethFormat(coin.price_eth)}
+BTC: ${formatting.btcFormat(coin.price_btc)}`
             },
             {
                 name: `Market Changes`,
-                value: `1 Hour: ${formatting.percentFormat(coin.percent_change_1h)}\n24 Hours: ${formatting.percentFormat(coin.percent_change_24h)}\n7 Days: ${formatting.percentFormat(coin.percent_change_7d)}`
+                value: `
+1 Hour: ${formatting.percentFormat(coin.percent_change_1h)}
+24 Hours: ${formatting.percentFormat(coin.percent_change_24h)}
+7 Days: ${formatting.percentFormat(coin.percent_change_7d)}`
             },
             {
                 name: `Market Cap`,
-                value: `${formatting.dollarFormat(coin.market_cap_usd)}`
+                value: `
+${formatting.dollarFormat(coin.market_cap_usd)}`
             }
         ],
         personal: false

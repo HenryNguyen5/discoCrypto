@@ -1,3 +1,4 @@
+import { largeSpace, mediumSpace, smallSpace } from '../util/formatting'
 const ngo = () => {
 	return {
 		embed: {
@@ -20,35 +21,39 @@ const help = () => {
 			title: `Help`,
 			fields: [
 				{
-					name: `.cmc`,
-					value: `
-stats: 											\t\t\t\t\tServes general data about the market
-s: 												  \t\t\t\t\tAlias for stats
-ticker <TICKER|SYMBOL>: 				\t\tServes specific data about a coin :rocket:
-t:									 				\t\t\t\t\tAlias for ticker`
-				},
-				{
 					name: `.gen`,
 					value: `
-help: 								  \t\t\t\t\t\t\tShow help`
+help:${largeSpace}  Show help`
+				},
+				{
+					name: `.cmc`,
+					value: `
+stats:${largeSpace} Serves general data about the market
+s:${largeSpace}${smallSpace}  Alias for stats
+ticker <TICKER|SYMBOL>: ${smallSpace}Serves specific data about a coin :rocket:
+t:${largeSpace}${smallSpace}  Alias for ticker`
 				},
 				{
 					name: `.ico`,
 					value: `
-del <ICO>: \t\t\t\t\t\t\t\t\t\t\t		delete the group buy
-join <ICO><AMOUNT><ADDR>:			Join the group buy of an ICO
-confirmTx <ICO><TXID>: \t\t\t\t 	   Confirm that you have sent your contribution
-list: \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  Lists all active ICOs
-display <ICO>: \t\t\t\t\t\t\t\t\t\t     Displays the group buy
-leave <ICO>: \t\t\t\t\t\t\t\t\t\t       Leave the group buy for an ICO
+new <NAME><CONTRIBADDR><MIN><MAX><TYPE>:
+${largeSpace} ${smallSpace}    Create new group buy
+del <NAME>: ${mediumSpace} ${smallSpace}   Delete the group buy
+join <NAME><AMOUNT><ADDR>:
+${largeSpace} ${smallSpace}     Join the group buy of an ICO
+confirmTx <NAME><TXID>:     Confirm that you have sent your contribution
+list:${largeSpace}${smallSpace}Lists all active ICOs
+display <NAME>:${mediumSpace}     Displays the group buy
+leave <NAME>: ${mediumSpace}       Leave the group buy for an ICO
 					`
 				},
 				{
 					name: `.per`,
 					value: `
-add <TICKER|SYMBOL><AMOUNT>:     Add a token to your portfolio 
-del <TICKER|SYMBOL>:				\t\t\t\tRemove the token from your portfolio
-list: 								\t\t\t\t\t\t\t\t\tList your portfolio - Sent by DM `
+add <TICKER|SYMBOL><AMOUNT>:     
+${largeSpace} ${smallSpace}      Add a token to your portfolio 
+del <TICKER|SYMBOL>:${smallSpace}${smallSpace}   Remove the token from your portfolio
+list:${largeSpace}${smallSpace} List your portfolio - Sent by DM `
 				},
 				{
 					name: `Spacing this is cancer`,

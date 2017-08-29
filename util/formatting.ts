@@ -10,3 +10,9 @@ export const formatting = {
 export const flatten  = (list) => {
 	return Array.prototype.concat(...list)
 }
+
+export const smallSpace = '      '
+
+export const mediumSpace = '                     '
+
+export const largeSpace = '                                              '
