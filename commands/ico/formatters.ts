@@ -1,9 +1,12 @@
-const format = require('format-number') // tslint:disable-line
+import { formatting, flatten } from '../../util/formatting'
 
 export const formatMembers = ({ amount, name, returnAddress, txid = null }) => {
-	return `${name} ${amount} ${returnAddress} ${txid
-		? `:ballot_box_with_check:${txid}`
-		: ':octagonal_sign:'}\n`
+	return  { 
+				name: `${name}: ${amount} `,
+				value: `${returnAddress}${txid
+					? `:ballot_box_with_check:${txid}`
+					: ':octagonal_sign:'}`
+			}
 }
 
 export const formatIco = ({
@@ -15,22 +18,21 @@ export const formatIco = ({
 	minAmount,
 	members
 }) => {
-	console.log(members)
-	const memberString = members.reduce((str, m) => (str += formatMembers(m)), '')
-	const dollarFormat = format({ prefix: '$' })
-	const percentFormat = format({ suffix: '%' })
-	const ethFormat = format({ prefix: 'Ξ' })
-	const btcFormat = format({ prefix: 'Ƀ' })
-	return `
-    ${name}     ${amountType}:${currentAmount}
-Contribution Addr: ${contributionAddress}
-Min Contribution Amount: ${minAmount}
-Contribution Cap:${maxAmount}
-Members:
-${memberString}
-    `
-}
+	//console.log(members)
+	//const memberString = members.reduce((str, m) => (str += formatMembers(m)), '')
+	const memberString = members.map((m) => (formatMembers(m)))
+	console.log(memberString)
+	let arr = [
+		{
+			name: `${name}     ${amountType}:${currentAmount}`,
+			value: `Contribution Addr: ${contributionAddress}\nMin Contribution Amount: ${minAmount}\nContribution Cap: ${maxAmount}`
+		},
+		memberString
 
+	]
+
+	return flatten(arr)
+}
 export const shortFormatIco = ({
 	name,
 	amountType,
@@ -39,14 +41,10 @@ export const shortFormatIco = ({
 	maxAmount,
 	minAmount
 }) => {
-	const dollarFormat = format({ prefix: '$' })
-	const percentFormat = format({ suffix: '%' })
-	const ethFormat = format({ prefix: 'Ξ' })
-	const btcFormat = format({ prefix: 'Ƀ' })
-	return `
-${name}     ${amountType}:${currentAmount}
-Contribution Addr: ${contributionAddress}
-Min Contribution Amount: ${minAmount}
-Contribution Cap:${maxAmount}
-    `
+	return { name: `${name}     ${amountType}:${currentAmount}`,
+			value: `Contribution Addr: ${contributionAddress}\nMin Contribution Amount: ${minAmount}\nContribution Cap: ${maxAmount}` }
+}
+
+export const returnAsEmbed = (fields) => {
+	return { embed: { fields: fields } }
 }

@@ -1,5 +1,5 @@
 import { Ico } from '../../db/models/ico'
-import { formatIco, shortFormatIco } from './formatters'
+import { formatIco, shortFormatIco,returnAsEmbed } from './formatters'
 const addIco = async (
 	[name, contributionAddress, minAmount, maxAmount, amountType]
 ) => {
@@ -41,13 +41,13 @@ const confirmTx = async ([icoName, txid, name]) => {
 }
 const displayIco = async ([icoName]) => {
 	const ico = await Ico.findIcoByName(icoName)
-	return formatIco(ico)
+	return returnAsEmbed(formatIco(ico))
 }
 
 const listIcos = async () => {
 	const icos = await Ico.find({})
-	const result = icos.map(ico => shortFormatIco(ico)).join('\n')
-	return result
+	const result = icos.map(ico => shortFormatIco(ico))
+	return returnAsEmbed(result)
 }
 
 export default {

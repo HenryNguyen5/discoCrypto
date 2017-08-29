@@ -1,56 +1,100 @@
-const format = require('format-number') // tslint:disable-line
-const formatData = data => {
-	const {
+import * as Discord from 'discord.js'
+import { formatting, flatten } from '../../util/formatting'
+import { lookupCoin } from '../cmc/api'
+interface coin {
+    rank,
+    name,
+    symbol,
+    price_usd,
+    price_btc,
+    price_eth,
+    percent_change_1h,
+    percent_change_24h,
+    percent_change_7d,
+    market_cap_usd
+}
+interface portfolioEntry {
+    name,
+    symbol,
+    rank,
+    price_usd,
+    price_btc,
+    price_eth,
+    percent_change_24h,
+    market_cap_usd
+}
+
+const createPortfolioMessage = (portfolio, username) => {
+    const flatten  = (list) => {
+        return Array.prototype.concat(...list)
+    }
+    return truncate(flatten(portfolio), username)
+}
+
+const truncate  = (_fieldList, user) => {
+    if (_fieldList.length < 25)
+        return [ { embed: { title: `${user}'s Portfolio`, fields: _fieldList }, personal: true } ]
+    
+    return [ { embed: { title: `${user}'s Portfolio`, fields: _fieldList.slice(0, 24) }, personal: true },
+             { embed: { fields: _fieldList.slice(24) }, personal: true }  ]
+}
+
+const portfolioEmbed = (port, unitsOwned: number) => {
+    const {
 		name,
 		symbol,
-		rank,
+		rank, 
 		price_usd,
 		price_btc,
 		price_eth,
-		percent_change_7d,
-		percent_change_1h,
 		percent_change_24h,
 		market_cap_usd
-	} = data
-	const dollarFormat = format({ prefix: '$' })
-	const percentFormat = format({ suffix: '%' })
-	const formattedString = `
-		:rocket:${rank}	${name}	${symbol}:rocket:
+    } = port
 
-		USD: ${dollarFormat(price_usd)}
-		BTC: ${format()(price_btc)}
-		ETH: ${format()(price_eth)}
-
-		1 Hour: ${percentFormat(percent_change_1h)}
-		24 Hours: ${percentFormat(percent_change_24h)}
-		7 Days: ${percentFormat(percent_change_7d)}
-		Market Cap: ${dollarFormat(market_cap_usd)}
-		`
-	return formattedString
-}
-const formatList = (data, unitsOwned: number) => {
-	const {
-		name,
-		symbol,
-		rank,
-		price_usd,
-		price_btc,
-		price_eth,
-		percent_change_24h,
-		market_cap_usd
-	} = data
-
-	const dollarFormat = format({ prefix: '$' })
-	const percentFormat = format({ suffix: '%' })
-	const ethFormat = format({ prefix: 'Ξ' })
-	const btcFormat = format({ prefix: 'Ƀ' })
-	const formattedString = `:rocket:${rank}	${name}	${symbol} Owned:${unitsOwned} 
-		USD: ${dollarFormat(price_usd)} = ${dollarFormat(price_usd * unitsOwned)}
-		BTC: ${format()(price_btc)} = ${btcFormat(price_btc * unitsOwned)}
-		ETH: ${format()(price_eth)} = ${ethFormat(price_eth * unitsOwned)}
-		24 Hours: ${percentFormat(percent_change_24h)}
-		`
-	return formattedString
+    return [
+        {
+            name: `:rocket:${port.rank}    ${port.name}  ${port.symbol}`,
+            value: `Units Owned: ${unitsOwned}`
+        },
+        {
+            name: `Market Values`,
+            value: `USD: ${formatting.dollarFormat(
+                port.price_usd)} | ${formatting.dollarFormat(
+            port.price_usd * unitsOwned)}\nBTC: ${formatting.btcFormat(
+                port.price_btc)} | ${formatting.btcFormat(
+                port.price_btc * unitsOwned)}\nETH: ${formatting.ethFormat(
+                    port.price_eth)} | ${formatting.ethFormat(
+                    port.price_eth * unitsOwned)}\n\n24 Hour Change: ${formatting.percentFormat(
+                        port.percent_change_24h)}`
+        }
+    ]
 }
 
-export { formatList, formatData }
+const tickerEmbed = (coin: coin) => {
+    const embed = {
+        title: `:rocket:${coin.rank}     ${coin.name}     ${coin.symbol}`,
+        fields: [
+            {
+                name: `Market Values`,
+                value: `USD: ${formatting.dollarFormat(
+                    coin.price_usd)}\nETH: ${formatting.ethFormat(
+                        coin.price_eth)}\nBTC: ${formatting.btcFormat(
+                            coin.price_btc)}`
+            },
+            {
+                name: `Market Changes`,
+                value: `1 Hour: ${formatting.percentFormat(coin.percent_change_1h)}\n24 Hours: ${formatting.percentFormat(coin.percent_change_24h)}\n7 Days: ${formatting.percentFormat(coin.percent_change_7d)}`
+            },
+            {
+                name: `Market Cap`,
+                value: `${formatting.dollarFormat(coin.market_cap_usd)}`
+            }
+        ],
+        personal: false
+        
+    }
+    return [{ embed }]
+}
+
+
+export { portfolioEmbed, tickerEmbed, createPortfolioMessage }

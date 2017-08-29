@@ -1,6 +1,5 @@
 import { globalMarketData, lookupCoin } from './api'
-import { formatData } from './formatters'
-import { tickerEmbed } from './embedders'
+import { tickerEmbed } from './formatters'
 
 const stats = () => globalMarketData
 
