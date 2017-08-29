@@ -97,5 +97,32 @@ const tickerEmbed = (coin: coin) => {
     return [{ embed }]
 }
 
+const statsEmbed = (stats) => {
+    const {
+        total_market_cap_usd,
+        total_24h_volume_usd,
+        bitcoin_percentage_of_market_cap,
+        active_currencies,
+        active_assets,
+        active_markets
+    } = stats
+    return {
+        embed: {
+            fields: [
+                {
+                    name: `Stats`,
+                    value: `
+Total Market Cap(USD): ${stats.total_market_cap_usd}
+Total 24h Volume(USD): ${stats.total_24h_volume_usd}
+Bitcoin Percentage of Market Cap: ${stats.bitcoin_percentage_of_market_cap}
+Active Currencies: ${stats.active_currencies}
+Active Assets: ${stats.active_assets}
+Active Markets: ${stats.active_markets}`
+                }
+            ]
+        }
+    }
+}
 
-export { portfolioEmbed, tickerEmbed, createPortfolioMessage }
+
+export { portfolioEmbed, tickerEmbed, createPortfolioMessage, statsEmbed }
