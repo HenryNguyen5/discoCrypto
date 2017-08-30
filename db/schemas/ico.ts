@@ -1,13 +1,11 @@
 import { Schema, SchemaDefinition } from 'mongoose'
-import { IIco, IIcoEntry, IIcoInternal } from '../models/ico'
+import { IIco, IIcoEntry } from '../models/ico'
 
 const icoEntry: SchemaDefinition = {
 	amount: { type: Number, required: true, min: 0 },
 	name: { type: String, required: true, lowercase: true, trim: true },
 	returnAddress: { type: String, required: true, trim: true },
-	txid: { type: String, required: false, trim: true },
-	tokenAmount: { type: Number, required: false, min: 0 },
-	tokenName: { type: String, required: false}
+	txid: { type: String, required: false, trim: true }
 }
 
 export const IcoSchema: Schema = new Schema({
@@ -81,22 +79,9 @@ IcoSchema.methods.addMember = async function(entry: IIcoEntry): Promise<IIco> {
 		}
 		return currentEntry
 	})
-	
-	const tokenAmount = amountNumber * this.tokenRate
-	const tokenName = this.tokenName
-	const amountType = this.amountType
-	const internalEntry:IIcoInternal = ({ 
-		name, 
-		amount:amountNumber,
-		amountType: amountType,
-		returnAddress,
-		txid: txid ? txid : '',
-		tokenAmount,
-		tokenName
-	})
 
 	if (!found) {
-		this.members = [...this.members, internalEntry]
+		this.members = [...this.members, entry]
 	}
 
 	if (this.currentAmount > this.maxAmount) {
