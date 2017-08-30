@@ -1,11 +1,13 @@
 import { Schema, SchemaDefinition } from 'mongoose'
-import { IIco, IIcoEntry } from '../models/ico'
+import { IIco, IIcoEntry, IIcoInternal } from '../models/ico'
 
 const icoEntry: SchemaDefinition = {
 	amount: { type: Number, required: true, min: 0 },
 	name: { type: String, required: true, lowercase: true, trim: true },
 	returnAddress: { type: String, required: true, trim: true },
-	txid: { type: String, required: false, trim: true }
+	txid: { type: String, required: false, trim: true },
+	tokenAmount: { type: Number, required: false, min: 0 },
+	tokenName: { type: String, required: false}
 }
 
 export const IcoSchema: Schema = new Schema({
@@ -16,7 +18,9 @@ export const IcoSchema: Schema = new Schema({
 	maxAmount: { type: Number, required: false, min: 0 },
 	minAmount: { type: Number, required: false, min: 0 },
 	members: { type: [icoEntry], default: [] },
-	name: { type: String, required: true, lowercase: true, trim: true }
+	name: { type: String, required: true, lowercase: true, trim: true },
+	tokenRate: { type: Number, required: false, min: 0 },
+	tokenName: { type: String, required: false}
 })
 
 IcoSchema.statics.newIco = async function(icoData): Promise<IIco> {
@@ -25,14 +29,18 @@ IcoSchema.statics.newIco = async function(icoData): Promise<IIco> {
 		contributionAddress,
 		minAmount,
 		maxAmount,
-		amountType
+		amountType,
+		tokenRate,
+		tokenName
 	} = icoData
 	if (
 		!name ||
 		!contributionAddress ||
 		!minAmount ||
 		!maxAmount ||
-		!amountType
+		!amountType ||
+		!tokenRate ||
+		!tokenName
 	) {
 		throw new Error('Invalid params to newIco')
 	}
@@ -55,6 +63,7 @@ IcoSchema.methods.addMember = async function(entry: IIcoEntry): Promise<IIco> {
 	const nameLowerCase = name.toLowerCase()
 	let found = false
 	const amountNumber = parseFloat(amount)
+ 
 	if (!nameLowerCase || !amountNumber || !returnAddress) {
 		throw new Error('Invalid params to addMember')
 	}
@@ -72,9 +81,22 @@ IcoSchema.methods.addMember = async function(entry: IIcoEntry): Promise<IIco> {
 		}
 		return currentEntry
 	})
+	
+	const tokenAmount = amountNumber * this.tokenRate
+	const tokenName = this.tokenName
+	const amountType = this.amountType
+	const internalEntry:IIcoInternal = ({ 
+		name, 
+		amount:amountNumber,
+		amountType: amountType,
+		returnAddress,
+		txid: txid ? txid : '',
+		tokenAmount,
+		tokenName
+	})
 
 	if (!found) {
-		this.members = [...this.members, entry]
+		this.members = [...this.members, internalEntry]
 	}
 
 	if (this.currentAmount > this.maxAmount) {

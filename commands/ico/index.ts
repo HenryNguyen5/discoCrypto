@@ -1,14 +1,16 @@
 import { Ico } from '../../db/models/ico'
 import { formatIco, shortFormatIco,returnAsEmbed } from './formatters'
 const addIco = async (
-	[name, contributionAddress, minAmount, maxAmount, amountType]
+	[name, contributionAddress, minAmount, maxAmount, amountType, tokenRate, tokenName]
 ) => {
 	const newIco = await Ico.newIco({
 		name,
 		contributionAddress,
 		minAmount,
 		maxAmount,
-		amountType
+		amountType,
+		tokenRate,
+		tokenName
 	})
 	return console.log(newIco)
 }

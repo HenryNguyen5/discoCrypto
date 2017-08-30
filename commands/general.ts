@@ -36,7 +36,7 @@ t:${largeSpace}${smallSpace}  Alias for ticker`
 				{
 					name: `.ico`,
 					value: `
-new <NAME><CONTRIBADDR><MIN><MAX><TYPE>:
+new <NAME><CONTRIBADDR><MIN><MAX><TYPE><RATE><SYMBOL>:
 ${largeSpace} ${smallSpace}    Create new group buy
 del <NAME>: ${mediumSpace} ${smallSpace}   Delete the group buy
 join <NAME><AMOUNT><ADDR>:
