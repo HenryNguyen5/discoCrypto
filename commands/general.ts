@@ -56,6 +56,24 @@ del <TICKER|SYMBOL>:${smallSpace}${smallSpace}   Remove the token from your port
 list:${largeSpace}${smallSpace} List your portfolio - Sent by DM `
 				},
 				{
+					name: `.alert`,
+					value: `
+price <SYMBOL|TICKER><TARGET>:
+${largeSpace} ${smallSpace}${smallSpace}Add a price alert
+ICO <NAME>: ${mediumSpace}${smallSpace}    Add an ICO alert
+del <NAME|SYMBOL|TICKER>:
+${largeSpace} ${smallSpace}${smallSpace}Remove an alert
+list
+`
+				},
+				{
+					name: `.sched`,
+					value: `
+add <NAME><DATE>: ${smallSpace}${smallSpace}    Add an upcoming ICO
+remove <NAME>: ${mediumSpace}    Remove an ICO from the list
+list: ${largeSpace}${smallSpace}List all upcoming ICOs`
+				},
+				{
 					name: `Spacing this is cancer`,
 					value: `This is what you get :)`
 				}

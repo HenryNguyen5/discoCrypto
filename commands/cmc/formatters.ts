@@ -1,4 +1,3 @@
-import * as Discord from 'discord.js'
 import { formatting, flatten } from '../../util/formatting'
 import { lookupCoin } from '../cmc/api'
 interface coin {
@@ -25,9 +24,6 @@ interface portfolioEntry {
 }
 
 const createPortfolioMessage = (portfolio, username) => {
-    const flatten  = (list) => {
-        return Array.prototype.concat(...list)
-    }
     let array = new Array()
     truncate(flatten(portfolio), username,array)
     return array
