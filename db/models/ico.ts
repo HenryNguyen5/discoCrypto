@@ -8,22 +8,27 @@ export interface IIcoEntry {
 	returnAddress: string
 	txid?: string
 }
+
 interface INewIco {
 	name: string
 	contributionAddress: string
 	minAmount: number
 	maxAmount: number
 	amountType: string
+	tokenRate: number
+	tokenName: string
 }
 
 export interface IIco extends Document {
-	amountType: number
+	amountType: string
 	createdAt: number
 	name: string
 	contributionAddress: string
 	minAmount: number
 	maxAmount: number
 	currentAmount: number
+	tokenRate: number
+	tokenName: string
 	members: [IIcoEntry]
 	addMember: (entry: IIcoEntry) => Promise<IIco>
 	removeMember: (name: string) => Promise<IIco>

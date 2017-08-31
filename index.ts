@@ -25,13 +25,20 @@ client.on('message', async message => {
 			`${message.content} ${message.author.username}`
 		).catch(e => console.error('Error:', e))
 
-		console.log('Result', result)
-
 		if (!result) {
 			return
 		}
-
-		message.channel.send(`\n${result}`)
+		console.log('result', result)
+		if (Array.isArray(result)){
+			result.forEach((embed) => {
+				if (embed.personal)
+					message.author.send(embed)
+				else
+					message.channel.send(embed)
+			})
+		}
+		else
+			message.channel.send(result)
 	} catch (error) {
 		console.error(error)
 	}

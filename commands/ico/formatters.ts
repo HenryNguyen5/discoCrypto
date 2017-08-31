@@ -1,9 +1,23 @@
-const format = require('format-number') // tslint:disable-line
+import { formatting, flatten, applyFormatType } from '../../util/formatting'
 
-export const formatMembers = ({ amount, name, returnAddress, txid = null }) => {
-	return `${name} ${amount} ${returnAddress} ${txid
-		? `:ballot_box_with_check:${txid}`
-		: ':octagonal_sign:'}\n`
+export const formatMembers = ({ 
+	amount, 
+	name, 
+	returnAddress,
+	txid = null
+	}, 
+	{ 
+		amountType, 
+		tokenRate,
+		tokenName
+	}) => {
+	return  { 
+				name: `
+${name}: ${applyFormatType({ amountType, amount })} | ${amount * tokenRate}${tokenName} `,
+				value: `${returnAddress}${txid
+					? `:ballot_box_with_check:${txid}`
+					: ':octagonal_sign:'}`
+			}
 }
 
 export const formatIco = ({
@@ -13,40 +27,50 @@ export const formatIco = ({
 	currentAmount = 0,
 	maxAmount,
 	minAmount,
-	members
+	members,
+	tokenRate,
+	tokenName
 }) => {
-	console.log(members)
-	const memberString = members.reduce((str, m) => (str += formatMembers(m)), '')
-	const dollarFormat = format({ prefix: '$' })
-	const percentFormat = format({ suffix: '%' })
-	const ethFormat = format({ prefix: 'Ξ' })
-	const btcFormat = format({ prefix: 'Ƀ' })
-	return `
-    ${name}     ${amountType}:${currentAmount}
+	const exchangeRates = {
+		amountType,
+		tokenRate,
+		tokenName
+	}
+	//console.log(members)
+	//const memberString = members.reduce((str, m) => (str += formatMembers(m)), '')
+	const memberString = members.map((m) => (formatMembers(m, exchangeRates)))
+	console.log(memberString)
+	let arr = [
+		{
+			name: `${name}     ${amountType}: ${currentAmount}/${maxAmount}`,
+			value: `
 Contribution Addr: ${contributionAddress}
 Min Contribution Amount: ${minAmount}
-Contribution Cap:${maxAmount}
-Members:
-${memberString}
-    `
-}
+Token Exchange Rate: ${applyFormatType({ amountType , amount: 1 })} = ${tokenRate}${tokenName}`
+		},
+		memberString
 
+	]
+
+	return flatten(arr)
+}
 export const shortFormatIco = ({
 	name,
 	amountType,
 	contributionAddress,
 	currentAmount = 0,
 	maxAmount,
-	minAmount
+	minAmount,
+	tokenRate,
+	tokenName
 }) => {
-	const dollarFormat = format({ prefix: '$' })
-	const percentFormat = format({ suffix: '%' })
-	const ethFormat = format({ prefix: 'Ξ' })
-	const btcFormat = format({ prefix: 'Ƀ' })
-	return `
-${name}     ${amountType}:${currentAmount}
+	return { name: `${name}     ${amountType}: ${currentAmount}/${maxAmount}`,
+			value: `
 Contribution Addr: ${contributionAddress}
-Min Contribution Amount: ${minAmount}
-Contribution Cap:${maxAmount}
-    `
+Token Exchange Rate: ${applyFormatType({ amountType, amount: 1})} = ${tokenRate}${tokenName}` 
+	}
+}
+
+export const returnAsEmbed = (fields) => {
+	return { embed: { fields: fields } }
 }

@@ -1,6 +1,6 @@
 import { User } from '../db/models/user'
 import { lookupCoin } from './cmc/api'
-import { formatList } from './cmc/formatters'
+import { portfolioEmbed, createPortfolioMessage } from './cmc/formatters'
 const addCoin = async ([coinName, unitsOwned, username]) => {
 	const { id: coinId } = lookupCoin(coinName)
 	if (!coinId) {
@@ -29,11 +29,9 @@ const list = async ([username]) => {
 	console.log('List:', curUser)
 	const result = curUser!.portfolio
 		.map(({ coinId, unitsOwned }) => {
-			console.log('inMap')
-			return formatList(lookupCoin(coinId), unitsOwned!)
+			return portfolioEmbed(lookupCoin(coinId), unitsOwned!)
 		})
-		.join('\n')
-	return result
+	return createPortfolioMessage(result, curUser!.username)
 }
 
 export default { add: addCoin, del: delCoin, list }

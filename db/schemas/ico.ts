@@ -16,7 +16,9 @@ export const IcoSchema: Schema = new Schema({
 	maxAmount: { type: Number, required: false, min: 0 },
 	minAmount: { type: Number, required: false, min: 0 },
 	members: { type: [icoEntry], default: [] },
-	name: { type: String, required: true, lowercase: true, trim: true }
+	name: { type: String, required: true, lowercase: true, trim: true },
+	tokenRate: { type: Number, required: false, min: 0 },
+	tokenName: { type: String, required: false}
 })
 
 IcoSchema.statics.newIco = async function(icoData): Promise<IIco> {
@@ -25,14 +27,18 @@ IcoSchema.statics.newIco = async function(icoData): Promise<IIco> {
 		contributionAddress,
 		minAmount,
 		maxAmount,
-		amountType
+		amountType,
+		tokenRate,
+		tokenName
 	} = icoData
 	if (
 		!name ||
 		!contributionAddress ||
 		!minAmount ||
 		!maxAmount ||
-		!amountType
+		!amountType ||
+		!tokenRate ||
+		!tokenName
 	) {
 		throw new Error('Invalid params to newIco')
 	}
@@ -55,6 +61,7 @@ IcoSchema.methods.addMember = async function(entry: IIcoEntry): Promise<IIco> {
 	const nameLowerCase = name.toLowerCase()
 	let found = false
 	const amountNumber = parseFloat(amount)
+ 
 	if (!nameLowerCase || !amountNumber || !returnAddress) {
 		throw new Error('Invalid params to addMember')
 	}
