@@ -1,4 +1,4 @@
-import { formatting, flatten, applyFormatType } from '../../util/formatting'
+import { applyFormatType, flatten, formatting } from '../../util/formatting'
 
 export const formatMembers = ({ 
 	amount, 
@@ -36,11 +36,11 @@ export const formatIco = ({
 		tokenRate,
 		tokenName
 	}
-	//console.log(members)
-	//const memberString = members.reduce((str, m) => (str += formatMembers(m)), '')
+	// console.log(members)
+	// const memberString = members.reduce((str, m) => (str += formatMembers(m)), '')
 	const memberString = members.map((m) => (formatMembers(m, exchangeRates)))
 	console.log(memberString)
-	let arr = [
+	const arr = [
 		{
 			name: `${name}     ${amountType}: ${currentAmount}/${maxAmount}`,
 			value: `
@@ -72,5 +72,5 @@ Token Exchange Rate: ${applyFormatType({ amountType, amount: 1})} = ${tokenRate}
 }
 
 export const returnAsEmbed = (fields) => {
-	return { embed: { fields: fields } }
+	return { embed: { fields } }
 }

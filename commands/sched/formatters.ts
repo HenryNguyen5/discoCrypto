@@ -1,19 +1,19 @@
 import { formatting } from '../../util/formatting'
 
-interface SchedEntry {
+interface ISchedEntry {
     name,
     date
 }
 
-interface Schedule {
+interface ISchedule {
     date: Date,
-    icos: [SchedEntry]
+    icos: [ISchedEntry]
 }
 
 const createSchedList = (schedule) => {
     const fields = schedule.icos.map(({ name, date }) => {
             return {
-                name: name, 
+                name, 
                 value: formatting.dateFormat(date) 
             }
         }

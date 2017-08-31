@@ -3,8 +3,9 @@ import { createSchedList } from './formatters'
 
 const addIco = async ([name, date]) => {
     let sched = await Sched.findOne()
-    if (!sched)
+    if (!sched){
         sched = await Sched.createICO()
+    }
     
     return console.log(await sched!.addICO({ name, date }))
 }
@@ -29,11 +30,12 @@ const updateTime = async() => {
 const removeOutdated = async([days]) => {
     await updateTime()
     const sched = await Sched.findOne()
-    return sched!.icos =  sched!.icos.filter(
+    const filteredIcos = sched!.icos.filter(
         ({ date: icoDate }) => {
             return sched!.currentDate > icoDate + days
         }
     )
+    return filteredIcos
 }
 
 export default { addIco, add: addIco, removeIco, remove: removeIco, list, clean: removeOutdated }

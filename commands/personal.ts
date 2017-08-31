@@ -1,6 +1,6 @@
 import { User } from '../db/models/user'
 import { lookupCoin } from './cmc/api'
-import { portfolioEmbed, createPortfolioMessage } from './cmc/formatters'
+import { createPortfolioMessage, portfolioEmbed } from './cmc/formatters'
 const addCoin = async ([coinName, unitsOwned, username]) => {
 	const { id: coinId } = lookupCoin(coinName)
 	if (!coinId) {
