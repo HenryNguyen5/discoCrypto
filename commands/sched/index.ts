@@ -16,26 +16,13 @@ const removeIco = async ([name]) => {
 }
 
 const list = async () => {
-    await updateTime()
     const sched = await Sched.findOne()
     return createSchedList(sched!)
 }
 
-const updateTime = async() => {
-    const now = new Date()
-    const sched = await Sched.findOne()
-    return sched!.currentDate = now
-}
-
 const removeOutdated = async([days]) => {
-    await updateTime()
     const sched = await Sched.findOne()
-    const filteredIcos = sched!.icos.filter(
-        ({ date: icoDate }) => {
-            return sched!.currentDate > icoDate + days
-        }
-    )
-    return filteredIcos
+    return console.log(await sched!.clean(days))
 }
 
-export default { addIco, add: addIco, removeIco, remove: removeIco, list, clean: removeOutdated }
+export default { addIco, add: addIco, removeIco, remove: removeIco, list, removeOutdated, clean: removeOutdated }

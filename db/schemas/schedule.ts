@@ -7,7 +7,6 @@ const schedEntry: SchemaDefinition = {
 }
 
 export const SchedSchema: Schema = new Schema({
-    date: { type: Date, required: true, trim: true },
     icos: { type: [schedEntry], default: [] }
 })
 
@@ -47,6 +46,20 @@ SchedSchema.methods.removeICO = async function(name: string): Promise <ISched> {
     this.icos = this.icos.filter(
         ({ name: currentName }) => {
             return currentName.toLowerCase() !== name
+        }
+    )
+    return this.save()
+}
+
+SchedSchema.methods.clean = async function (threshold: number): Promise<ISched> {
+    if (isNaN(threshold)){
+        threshold = 0 
+    }
+    const now = new Date()
+    const removeBefore = new Date(now.setDate(now.getDate() - threshold))
+    this.icos = this.icos.filter(
+        ({ date: icoDate }) => {
+            return new Date(icoDate).getTime() > removeBefore.getTime()
         }
     )
     return this.save()

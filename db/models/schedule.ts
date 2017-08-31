@@ -8,10 +8,10 @@ export interface ISchedEntry {
 }
 
 export interface ISched extends Document {
-    currentDate: Date
     icos: [ISchedEntry]
     addICO: (sched: ISchedEntry) => Promise<ISched>
     removeICO: (name: string) => Promise<ISched>
+    clean: (threshold: number) => Promise<ISched>
 }
 export interface ISchedModel extends Model<ISched> {
     createICO: () => Promise<ISched>
