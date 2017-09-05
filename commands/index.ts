@@ -1,9 +1,10 @@
+import alert from './alert'
 import cmc from './cmc'
 import gen from './general'
 import ico from './ico'
 import personal from './personal'
 import scheduler from './sched'
-const commandObj = { cmc, gen, per: personal, ico, sched: scheduler }
+const commandObj = { alert, cmc, gen, per: personal, ico, sched: scheduler }
 const PREFIX = '.'
 
 const preFixedCommandObj = Object.keys(

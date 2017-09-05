@@ -25,4 +25,12 @@ const removeOutdated = async([days]) => {
     return console.log(await sched!.clean(days))
 }
 
-export default { addIco, add: addIco, removeIco, remove: removeIco, list, removeOutdated, clean: removeOutdated }
+export default { 
+    addIco, 
+    add: addIco, 
+    removeIco, 
+    remove: removeIco, 
+    list, 
+    removeOutdated, 
+    clean: removeOutdated 
+}

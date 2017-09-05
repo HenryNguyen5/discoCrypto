@@ -1,10 +1,10 @@
 import * as request from 'request-promise-native'
+import { checkUserAlerts, getAllAlerts } from '../alert/helpers'
 
 const MINUTE = 1000 * 60
 let tickers = {}
 let symbols = {}
 let globalMarketData = {}
-
 const cmc = request.defaults({
 	baseUrl: 'https://api.coinmarketcap.com/v1',
 	json: true
@@ -37,6 +37,7 @@ const updateCmcCache = async () => {
 		{}
 	)
 	globalMarketData = await cmc.get('/global')
+	checkUserAlerts(coinArray)
 }
 
 updateCmcCache()

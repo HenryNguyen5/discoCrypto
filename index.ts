@@ -31,17 +31,31 @@ client.on('message', async message => {
 		console.log('result', result)
 		if (Array.isArray(result)){
 			result.forEach((embed) => {
-				if (embed.personal)
+				if (embed.personal) {
 					message.author.send(embed)
-				else
+				}
+				else {
 					message.channel.send(embed)
+				}
 			})
 		}
-		else
+		else{
 			message.channel.send(result)
+		}
 	} catch (error) {
 		console.error(error)
 	}
 })
 
 client.login(DISCORD_TOKEN)
+
+export const sendMessage = async ({ user, message }) => {
+	console.log(message)
+	await client
+	if (user){
+		client.users.find('username', user).send(message)
+		
+	} else {
+		throw new Error('Invalid params send to sendMessage')
+	}
+}
