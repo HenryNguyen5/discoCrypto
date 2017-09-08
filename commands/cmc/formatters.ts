@@ -88,7 +88,7 @@ BTC: ${formatting.btcFormat(coinTicker.price_btc)}`
             {
                 name: `Market Cap`,
                 value: `
-${formatting.dollarFormat(coinTicker.market_cap_usd)}`
+${coinTicker.market_cap_usd?formatting.dollarFormat(coinTicker.market_cap_usd):'N/A'}`
             }
         ],
         personal: false
