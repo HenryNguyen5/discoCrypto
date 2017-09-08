@@ -58,7 +58,8 @@ export const sendMessage = async ({ user, message }) => {
 			client.users.find('username', user).send(message)
 			
 		} else {
-			channel.send(message)
+			// tslint:disable-next-line
+			client.guilds.find('name', 'bottesting').channels.find('name','general').send(message)
 		}
 	} catch (err) {
 		console.error(err)

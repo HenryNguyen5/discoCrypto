@@ -1,6 +1,6 @@
 import * as request from 'request-promise-native'
 import { checkUserAlerts, getAllAlerts } from '../alert/helpers'
-import { checkSchedule } from '../sched'
+import { checkSchedule } from '../sched/helpers'
 
 const MINUTE = 1000 * 60
 const DAY = MINUTE * 60 * 24

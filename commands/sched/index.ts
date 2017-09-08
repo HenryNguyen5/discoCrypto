@@ -26,19 +26,8 @@ const removeOutdated = async([days]) => {
     return console.log(await sched!.clean(days))
 }
 
-export const checkSchedule = async() => {
-    const sched = await Sched.findOne()
-    const now = new Date()
-    const icosToday = sched!.icos.filter(
-        (upcoming => {
-            const { name, date } = upcoming
-            return date.getTime() <= now.getTime()
-        })
-    )
-    sendMessage({
-        user: null,
-        message: createSchedMessage(icosToday)
-    })
+export const removeItem = async({ name, date }) => {
+    removeIco([name])
 }
 
 export default { 
