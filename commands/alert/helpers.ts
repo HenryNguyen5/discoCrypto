@@ -19,12 +19,14 @@ export const checkUserAlerts = async(coinArray) => {
                     const triggeredAlert = checkAlertTrigger({ alert, coin: currCoin })
                    
                     if (triggeredAlert){
-                        sendMessage({ 
+                        sendMessage({
                             user: currUser, 
                             message: createAlertMessage({ 
                                 alerts: alertEmbed({ coin: currCoin, above, price, unit }),
                                 user: currUser 
-                            }) 
+                            }),
+                            guild: null,
+                            channel: null
                         })
                         const coinName = triggeredAlert.coin.name.toLowerCase()
                         console.log(coinName, currUser)
