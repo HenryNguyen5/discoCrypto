@@ -11,7 +11,7 @@ if (!DISCORD_TOKEN) {
 }
 
 const client = new Discord.Client()
-
+let channel
 client.on('ready', async () => {
 	await db(MONGODB_URI)
 	console.log('I am ready!')
@@ -19,6 +19,7 @@ client.on('ready', async () => {
 })
 
 client.on('message', async message => {
+	channel = message.channel
 	try {
 		console.log(message.author.username)
 		const result = await commands(
@@ -28,9 +29,10 @@ client.on('message', async message => {
 		if (!result) {
 			return
 		}
-		console.log('result', result)
+		console.log('result', JSON.stringify(result, null, 2))
+		
 		if (Array.isArray(result)){
-			result.forEach((embed) => {
+			result.map((embed) => {
 				if (embed.personal) {
 					message.author.send(embed)
 				}
@@ -50,12 +52,15 @@ client.on('message', async message => {
 client.login(DISCORD_TOKEN)
 
 export const sendMessage = async ({ user, message }) => {
-	console.log(message)
-	await client
-	if (user){
-		client.users.find('username', user).send(message)
-		
-	} else {
-		throw new Error('Invalid params send to sendMessage')
+	console.log('Message', JSON.stringify(message,null, 2))
+	try{
+		if (user){
+			client.users.find('username', user).send(message)
+			
+		} else {
+			channel.send(message)
+		}
+	} catch (err) {
+		console.error(err)
 	}
 }

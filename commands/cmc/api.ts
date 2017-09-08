@@ -1,7 +1,9 @@
 import * as request from 'request-promise-native'
 import { checkUserAlerts, getAllAlerts } from '../alert/helpers'
+import { checkSchedule } from '../sched'
 
 const MINUTE = 1000 * 60
+const DAY = MINUTE * 60 * 24
 let tickers = {}
 let symbols = {}
 let globalMarketData = {}
@@ -45,6 +47,8 @@ updateCmcCache()
 setInterval(() => {
 	console.log('Minute elapsed: Updating cache')
 	updateCmcCache()
+	checkSchedule()
 }, MINUTE)
+
 
 export { lookupCoin, globalMarketData }

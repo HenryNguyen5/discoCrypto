@@ -1,5 +1,6 @@
+import { sendMessage } from '../..'
 import { Sched } from '../../db/models/schedule'
-import { createSchedList } from './formatters'
+import { createSchedList, createSchedMessage } from './formatters'
 
 const addIco = async ([name, date]) => {
     let sched = await Sched.findOne()
@@ -23,6 +24,21 @@ const list = async () => {
 const removeOutdated = async([days]) => {
     const sched = await Sched.findOne()
     return console.log(await sched!.clean(days))
+}
+
+export const checkSchedule = async() => {
+    const sched = await Sched.findOne()
+    const now = new Date()
+    const icosToday = sched!.icos.filter(
+        (upcoming => {
+            const { name, date } = upcoming
+            return date.getTime() <= now.getTime()
+        })
+    )
+    sendMessage({
+        user: null,
+        message: createSchedMessage(icosToday)
+    })
 }
 
 export default { 
