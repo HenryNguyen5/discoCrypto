@@ -5,8 +5,7 @@ import db from './db'
 import envLoader from './util/env-loader'
 
 const { DISCORD_TOKEN, MONGODB_URI } = envLoader(discordConfig)
-const DEFAULT_GUILD_NAME = 'bottesting'
-const DEFAULT_CHANNEL_NAME = 'general'
+const { DEFAULT_CHANNEL_NAME, DEFAULT_GUILD_NAME } = discordConfig
 if (!DISCORD_TOKEN) {
 	console.log('No discord token found, exiting...')
 	process.exit()

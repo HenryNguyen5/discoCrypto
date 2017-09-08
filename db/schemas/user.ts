@@ -111,7 +111,6 @@ UserSchema.methods.removeAlert = async function(alert: IAlertEntry) {
 
 	this.alerts = this.alerts.filter(
 		({ coinId }) => {
-			console.log(coinId)
 			return alertToRem !== coinId
 		}
 	)

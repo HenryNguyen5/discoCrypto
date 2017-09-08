@@ -58,10 +58,9 @@ list:${largeSpace}${smallSpace} List your portfolio - Sent by DM `
 				{
 					name: `.alert`,
 					value: `
-price <SYMBOL|TICKER><TARGET>:
+add <TICKER|SYMBOL><ABOVE/BELOW><PRICE><UNIT>:
 ${largeSpace} ${smallSpace}${smallSpace}Add a price alert
-ICO <NAME>: ${mediumSpace}${smallSpace}    Add an ICO alert
-del <NAME|SYMBOL|TICKER>:
+del <TICKER|SYMBOL>:
 ${largeSpace} ${smallSpace}${smallSpace}Remove an alert
 list
 `
