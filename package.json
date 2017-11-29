@@ -4,6 +4,7 @@
 	"description": "A discord bot meant to serve crypto-currency related data.",
 	"main": "index.js",
 	"dependencies": {
+		"dateformat": "^2.0.0",
 		"discord.js": "^11.1.0",
 		"format-number": "^3.0.0",
 		"mongodb": "^2.2.31",

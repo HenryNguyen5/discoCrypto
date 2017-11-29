@@ -1,5 +1,5 @@
 import { Ico } from '../../db/models/ico'
-import { formatIco, shortFormatIco,returnAsEmbed } from './formatters'
+import { formatIco, returnAsEmbed, shortFormatIco } from './formatters'
 const addIco = async (
 	[name, contributionAddress, minAmount, maxAmount, amountType, tokenRate, tokenName]
 ) => {

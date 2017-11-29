@@ -1,7 +1,6 @@
-import * as Discord from 'discord.js'
-import { formatting, flatten } from '../../util/formatting'
+import { flatten, formatting } from '../../util/formatting'
 import { lookupCoin } from '../cmc/api'
-interface coin {
+interface ICoin {
     rank,
     name,
     symbol,
@@ -13,7 +12,7 @@ interface coin {
     percent_change_7d,
     market_cap_usd
 }
-interface portfolioEntry {
+interface IPortfolioEntry {
     name,
     symbol,
     rank,
@@ -25,18 +24,16 @@ interface portfolioEntry {
 }
 
 const createPortfolioMessage = (portfolio, username) => {
-    const flatten  = (list) => {
-        return Array.prototype.concat(...list)
-    }
-    let array = new Array()
-    truncate(flatten(portfolio), username,array)
+    const array = new Array()
+    truncate(flatten(portfolio), username, array)
     return array
 }
 
-const truncate = (_fieldList, user, array) => {
-    array.push({ embed: { title: `${user}'s Portfolio`, fields: _fieldList }, personal: true })
-    if (_fieldList.length > 24 )
-        truncate(_fieldList.slice(24), user, array)
+const truncate = (fieldList, user, array) => {
+    array.push({ embed: { title: `${user}'s Portfolio`, fields: fieldList }, personal: true })
+    if (fieldList.length > 24 ){
+        truncate(fieldList.slice(24), user, array)
+    }
     return array
 }
 
@@ -70,28 +67,28 @@ ETH: ${formatting.ethFormat(port.price_eth)} | ${formatting.ethFormat(port.price
     ]
 }
 
-const tickerEmbed = (coin: coin) => {
+const tickerEmbed = (coinTicker: ICoin) => {
     const embed = {
-        title: `:rocket:${coin.rank}     ${coin.name}     ${coin.symbol}`,
+        title: `:rocket:${coinTicker.rank}     ${coinTicker.name}     ${coinTicker.symbol}`,
         fields: [
             {
                 name: `Market Values`,
                 value: `
-USD: ${formatting.dollarFormat(coin.price_usd)}
-ETH: ${formatting.ethFormat(coin.price_eth)}
-BTC: ${formatting.btcFormat(coin.price_btc)}`
+USD: ${formatting.dollarFormat(coinTicker.price_usd)}
+ETH: ${formatting.ethFormat(coinTicker.price_eth)}
+BTC: ${formatting.btcFormat(coinTicker.price_btc)}`
             },
             {
                 name: `Market Changes`,
                 value: `
-1 Hour: ${formatting.percentFormat(coin.percent_change_1h)}
-24 Hours: ${formatting.percentFormat(coin.percent_change_24h)}
-7 Days: ${formatting.percentFormat(coin.percent_change_7d)}`
+1 Hour: ${formatting.percentFormat(coinTicker.percent_change_1h)}
+24 Hours: ${formatting.percentFormat(coinTicker.percent_change_24h)}
+7 Days: ${formatting.percentFormat(coinTicker.percent_change_7d)}`
             },
             {
                 name: `Market Cap`,
                 value: `
-${formatting.dollarFormat(coin.market_cap_usd)}`
+${coinTicker.market_cap_usd?formatting.dollarFormat(coinTicker.market_cap_usd):'N/A'}`
             }
         ],
         personal: false
