@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js'
-import commands from './commands'
+import commands, {PREFIX} from './commands'
 import discordConfig from './config'
 import db from './db'
 import envLoader from './util/env-loader'
@@ -19,6 +19,12 @@ client.on('ready', async () => {
 })
 
 client.on('message', async message => {
+
+  // skip all non bot related messages
+  if (!message.content.startsWith(PREFIX) || message.author.bot) {
+    return;
+  }
+
 	try {
 		console.log(message.author.username)
 		const result = await commands(

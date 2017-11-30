@@ -25,3 +25,4 @@ const commandHandler = async command => {
 }
 
 export default commandHandler
+export {PREFIX};
