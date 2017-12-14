@@ -7,8 +7,8 @@ const MINUTE = 1000 * 60
 const FIVE_MINUTES = MINUTE * 5
 const DAY = MINUTE * 60 * 24
 
-const tickers = {}
-const symbols = {}
+let tickers = {}
+let symbols = {}
 let globalMarketData = {}
 
 const cmc = request.defaults({
@@ -27,32 +27,28 @@ const updateCmcCache = async () => {
 		.get('/ticker/ethereum')
 		.then(([{ price_btc }]) => price_btc)
 
-  // gets top 1000 coins
-  for (let i = 0; i < 10; i++) {
-    const coinArray = await cmc.get(`/ticker?start=${i*100}`).then(async allcoins =>
-      allcoins.map(coin => ({
-        ...coin,
-        price_eth: `${(parseFloat(coin.price_btc) /
-          parseFloat(ethBtcPrice)).toFixed(8)}`
-      }))
-    )
+  
+  // limit = 0 gets all coins
+  const coinArray = await cmc.get(`/ticker?limit=0`).then(async allcoins =>
+    allcoins.map(coin => ({
+      ...coin,
+      price_eth: `${(parseFloat(coin.price_btc) /
+        parseFloat(ethBtcPrice)).toFixed(8)}`
+    }))
+  )
 
-    Object.assign(
-      tickers,
-      coinArray.reduce(
-        (coins, currCoin) => ({ ...coins, [currCoin.id]: currCoin }),
-        {}
-      )
-    )
-    Object.assign(
-      symbols,
-      coinArray.reduce(
-        (coins, currCoin) => ({ ...coins, [currCoin.symbol]: currCoin }),
-        {}
-      )
-    )
-    checkUserAlerts(coinArray)
-  }
+  tickers = coinArray.reduce(
+    (coins, currCoin) => ({ ...coins, [currCoin.id]: currCoin }),
+    {}
+  );
+
+  symbols = coinArray.reduce(
+    (coins, currCoin) => ({ ...coins, [currCoin.symbol]: currCoin }),
+    {}
+  );
+
+  checkUserAlerts(coinArray)
+  
 
 	globalMarketData = await cmc.get('/global')
 }
