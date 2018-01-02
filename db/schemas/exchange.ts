@@ -1,10 +1,9 @@
-import { knex } from "../connect";
 import { Columns, Tables } from "../table-enum";
 
-function generateTable() {
-  return knex.schema.hasTable(Tables.EXCHANGE).then(exists => {
+function generateTable(db) {
+  return db.schema.hasTable(Tables.EXCHANGE).then(exists => {
     if (!exists) {
-      return knex.schema.createTable(Tables.EXCHANGE, tableSchema);
+      return db.schema.createTable(Tables.EXCHANGE, tableSchema);
     }
     return Promise.resolve;
   });

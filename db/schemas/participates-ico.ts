@@ -1,10 +1,9 @@
-import { knex } from "../connect";
 import { Columns, Tables } from "../table-enum";
 
-function generateTable() {
-  return knex.schema.hasTable(Tables.PARTICIPATES_ICO).then(exists => {
+function generateTable(db) {
+  return db.schema.hasTable(Tables.PARTICIPATES_ICO).then(exists => {
     if (!exists) {
-      knex.schema.createTable(Tables.PARTICIPATES_ICO, tableSchema);
+      db.schema.createTable(Tables.PARTICIPATES_ICO, tableSchema);
     }
     return Promise.resolve;
   });

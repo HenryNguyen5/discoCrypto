@@ -1,10 +1,9 @@
-import { knex } from "../connect";
 import { Columns, Tables } from "../table-enum";
 
-function generateTable() {
-  return knex.schema.hasTable(Tables.COIN).then(exists => {
+function generateTable(db) {
+  return db.schema.hasTable(Tables.COIN).then(exists => {
     if (!exists) {
-      return knex.schema.createTable(Tables.COIN, tableSchema);
+      return db.schema.createTable(Tables.COIN, tableSchema);
     }
     return Promise.resolve();
   });
@@ -13,7 +12,7 @@ function generateTable() {
 function tableSchema(table) {
   const { Coin } = Columns;
 
-  table.string(Coin.NAME, 100).notNullable().onDelete("CASCADE");
+  table.string(Coin.NAME, 100).notNullable();
   table.string(Coin.TICKER, 6).notNullable();
   table.primary([Coin.NAME]);
 }

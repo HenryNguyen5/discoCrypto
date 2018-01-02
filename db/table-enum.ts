@@ -9,7 +9,8 @@ enum Tables {
 
 enum User {
   USERNAME = "username",
-  ALIAS = "alias"
+  ALIAS = "alias",
+  VERIFIED = "verified"
 }
 
 enum Coin {

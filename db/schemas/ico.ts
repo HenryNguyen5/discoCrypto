@@ -1,10 +1,9 @@
-import { knex } from "../connect";
 import { Columns, Tables } from "../table-enum";
 
-function generateTable() {
-  return knex.schema.hasTable(Tables.ICO).then(exists => {
+function generateTable(db) {
+  return db.schema.hasTable(Tables.ICO).then(exists => {
     if (!exists) {
-      return knex.schema.createTable(Tables.ICO, tableSchema);
+      return db.schema.createTable(Tables.ICO, tableSchema);
     }
     return Promise.resolve;
   });
@@ -13,11 +12,11 @@ function generateTable() {
 function tableSchema(table) {
   const { ICO, User } = Columns;
 
-  table.string(ICO.NAME, 100).notNullable().onDelete("CASCADE");
-  table.string(ICO.OWNER).notNullable().onDelete("CASCADE");
+  table.string(ICO.NAME, 100).notNullable();
+  table.string(ICO.OWNER).notNullable();
 
   //   TODO: Add check so address is exactly 42
-  table.string(ICO.OWNER_ADDR, 42).notNullable().onDelete("CASCADE");
+  table.string(ICO.OWNER_ADDR, 42).notNullable();
   table.string(ICO.TICKER, 6).notNullable();
   table.dateTime(ICO.DEADLINE).notNullable();
 
