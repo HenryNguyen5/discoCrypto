@@ -1,80 +1,76 @@
-import * as Discord from 'discord.js'
-import commands, {PREFIX} from './commands'
-import discordConfig from './config'
-import db from './db'
-import envLoader from './util/env-loader'
+import * as Discord from "discord.js";
+import commands, { PREFIX } from "./commands";
+import discordConfig from "./config";
+import Database from "./db";
+import envLoader from "./util/env-loader";
 
-const { DISCORD_TOKEN, MONGODB_URI } = envLoader(discordConfig)
-const { DEFAULT_CHANNEL_NAME, DEFAULT_GUILD_NAME } = discordConfig
+const { DISCORD_TOKEN, MONGODB_URI } = envLoader(discordConfig);
+const { DEFAULT_CHANNEL_NAME, DEFAULT_GUILD_NAME } = discordConfig;
 if (!DISCORD_TOKEN) {
-	console.log('No discord token found, exiting...')
-	process.exit()
+  console.log("No discord token found, exiting...");
+  process.exit();
 }
 
-const client = new Discord.Client()
-client.on('ready', async () => {
-	await db(MONGODB_URI)
-	console.log('I am ready!')
-	client.user.setGame('watching for nocoiners')
-})
+const client = new Discord.Client();
+client.on("ready", async () => {
+  const knex = await new Database(discordConfig.DB_CONNECTION_CONFIG).db;
+  console.log("I am ready!");
+  client.user.setGame("watching for nocoiners");
+});
 
-client.on('message', async message => {
-
+client.on("message", async message => {
   // skip all non bot related messages
   if (!message.content.startsWith(PREFIX) || message.author.bot) {
     return;
   }
 
-	try {
-		console.log(message.author.username)
-		const result = await commands(
-			`${message.content} ${message.author.username}`
-		).catch(e => console.error('Error:', e))
+  try {
+    console.log(message.author.username);
+    const result = await commands(
+      `${message.content} ${message.author.username}`
+    ).catch(e => console.error("Error:", e));
 
-		if (!result) {
-			return
-		}
-		console.log('result', JSON.stringify(result, null, 2))
-		
-		if (Array.isArray(result)){
-			result.map((embed) => {
-				if (embed.personal) {
-					message.author.send(embed)
-				}
-				else {
-					message.channel.send(embed)
-				}
-			})
-		}
-		else{
-			message.channel.send(result)
-		}
-	} catch (error) {
-		console.error(error)
-	}
-})
+    if (!result) {
+      return;
+    }
+    console.log("result", JSON.stringify(result, null, 2));
 
-client.login(DISCORD_TOKEN)
+    if (Array.isArray(result)) {
+      result.map(embed => {
+        if (embed.personal) {
+          message.author.send(embed);
+        } else {
+          message.channel.send(embed);
+        }
+      });
+    } else {
+      message.channel.send(result);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+});
 
-export const sendMessage = async (
-	{ 
-		user, 
-		message, 
-		guild = DEFAULT_GUILD_NAME, 
-		channel = DEFAULT_CHANNEL_NAME 
-	}) => {
-	console.log('Message', JSON.stringify(message,null, 2))
-	try{
-		if (user){
-			client.users.find('username', user).send(message)
-			
-		} else {
-			// tslint:disable-next-line
-			client.guilds.find('name', guild)
-				.channels.find('name', channel)
-				.send(message)
-		}
-	} catch (err) {
-		console.error(err)
-	}
-}
+client.login(DISCORD_TOKEN);
+
+export const sendMessage = async ({
+  user,
+  message,
+  guild = DEFAULT_GUILD_NAME,
+  channel = DEFAULT_CHANNEL_NAME
+}) => {
+  console.log("Message", JSON.stringify(message, null, 2));
+  try {
+    if (user) {
+      client.users.find("username", user).send(message);
+    } else {
+      // tslint:disable-next-line
+      client.guilds
+        .find("name", guild)
+        .channels.find("name", channel)
+        .send(message);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};

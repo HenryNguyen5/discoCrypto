@@ -1,15 +1,16 @@
 import { Config, ConnectionConfig } from "knex";
 import * as knexDep from "knex";
 
-import { Columns, Tables } from "./table-enum";
+// Better way to do this?
+import Models from "./models/";
+const { Tables, Columns } = Models;
 
-// Add a common interface for these
-import * as coinGen from "./schemas/coin";
-import * as exchangeGen from "./schemas/exchange";
-import * as icoGen from "./schemas/ico";
-import * as participateGen from "./schemas/participates-ico";
-import * as transactionGen from "./schemas/transaction";
-import * as userGen from "./schemas/user";
+import CoinTable from "./schemas/coin";
+import ExchangeTable from "./schemas/exchange";
+import ICOTable from "./schemas/ico";
+import ParticipatesTable from "./schemas/participates-ico";
+import TransactionTable from "./schemas/transaction";
+import UserTable from "./schemas/user";
 
 const DEBUG: boolean = true;
 
@@ -22,8 +23,8 @@ export default class Database {
       console.log(
         "Config changed! Please (re)connect to database via Database.connect()"
       );
-      Database.connection = config;
     }
+    Database.connection = config;
   }
 
   public connect = async () => {
@@ -35,42 +36,61 @@ export default class Database {
 
     let success: boolean = false;
 
-    await Database.db.raw("select 1+1 as result").then(() => {
-      console.log("Successful connection");
-      success = true;
-    });
+    await Database.db
+      .raw("select 1+1 as result")
+      .then(() => {
+        console.log("Successful connection");
+        success = true;
+      })
+      .catch(err => {
+        console.log("Failed to connect to db\n", err);
+      });
 
     return success;
   };
 
-  public init = async () => {
+  // Assume connection was a success if not chained directly from connect().then(init)
+  public init = async (connSuccess: boolean = true) => {
+    if (!connSuccess || !Database.db) {
+      throw new Error("Trying to initialize with failed/no connection");
+    }
+
     console.log("Commencing table validation/generation");
 
     try {
       const tableGen = [
-        userGen.generateTable(Database.db),
-        coinGen.generateTable(Database.db),
-        icoGen.generateTable(Database.db),
-        participateGen.generateTable(Database.db),
-        transactionGen.generateTable(Database.db),
-        exchangeGen.generateTable(Database.db)
+        new UserTable(),
+        new CoinTable(),
+        new ICOTable(),
+        new ParticipatesTable(),
+        new TransactionTable(),
+        new ExchangeTable()
       ];
 
-      return tableGen.reduce((cur, next) => {
-        return cur.then(next);
-      });
-    } catch (e) {
-      console.log(e, "error");
+      const tableStr = [
+        Tables.USER,
+        Tables.COIN,
+        Tables.ICO,
+        Tables.PARTICIPATES_ICO,
+        Tables.TRANSACTION,
+        Tables.EXCHANGE
+      ];
+
+      for (const fn of tableGen) {
+        await fn.generateTable(Database.db);
+      }
+    } catch (err) {
+      console.log("Error generating tables", err);
     }
   };
 
-  public getDb = () => {
+  get db() {
     return Database.db;
-  };
+  }
 
   // For DEBUG Purposes
-  public dropAllTables = async () => {
-    if (!DEBUG) {
+  public dropAllTables = async (connSuccess: boolean = true) => {
+    if (!DEBUG || !connSuccess || !Database.db) {
       return;
     }
 
@@ -83,14 +103,18 @@ export default class Database {
       Tables.EXCHANGE
     ];
 
-    const x = tableStr.map(async str => {
-      // exists = await knex.schema.hasTable(str);
-      await Database.db.schema.dropTableIfExists(str).then(val => {
-        console.log(`Dropped table ${str}\n`);
-        // console.log(val);
+    try {
+      const x = tableStr.map(async str => {
+        // exists = await knex.schema.hasTable(str);
+        await Database.db.schema.dropTableIfExists(str).then(val => {
+          console.log(`Dropped table ${str}\n`);
+          // console.log(val);
+        });
       });
-    });
 
-    await Promise.all(x);
+      await Promise.all(x);
+    } catch (err) {
+      console.log("Drop all tables failed", err);
+    }
   };
 }

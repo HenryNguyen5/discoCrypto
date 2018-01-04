@@ -1,47 +1,57 @@
-import { Columns, Tables } from "../table-enum";
+import { ITableInterface } from "../models/";
+import Models from "../models/"; // Better way to do this?
+const { Tables, Columns } = Models;
 
-function generateTable(db) {
-  return db.schema.hasTable(Tables.TRANSACTION).then(exists => {
-    if (!exists) {
-      return db.schema.createTable(Tables.TRANSACTION, tableSchema);
-    }
-    return Promise.resolve;
-  });
-}
+// Might want to use inheritance for this
+export default class TransactionTable implements ITableInterface {
+  public tName = Tables.TRANSACTION;
+  public cNames;
 
-function tableSchema(table) {
-  const { ICO, Transaction, User } = Columns;
+  constructor() {
+    this.cNames = ["default"];
+  }
 
-  table.string(Transaction.USERNAME, 100).notNullable();
-  table.string(Transaction.ICO_NAME).notNullable();
-  table.string(Transaction.ICO_OWNER, 100).notNullable();
-  table.string(Transaction.TO_ADDR, 42).notNullable();
-  table.string(Transaction.TX_HASH, 66); //   TODO: Add check hash is exactly 66
-  table.json(Transaction.METADATA);
+  public generateTable = db => {
+    return db.schema.hasTable(this.tName).then(exists => {
+      if (!exists) {
+        return db.schema.createTable(this.tName, this.tableSchema);
+      }
+      return Promise.resolve;
+    });
+  };
 
-  table
-    .foreign(Transaction.USERNAME)
-    .references(User.USERNAME)
-    .inTable(Tables.USER)
-    .onDelete("CASCADE");
+  private tableSchema = table => {
+    const { ICO, Transaction, User } = Columns;
 
-  table
-    .foreign([
+    table.string(Transaction.USERNAME, 100).notNullable();
+    table.string(Transaction.ICO_NAME).notNullable();
+    table.string(Transaction.ICO_OWNER, 100).notNullable();
+    table.string(Transaction.TO_ADDR, 42).notNullable(); //   TODO: Add check public key is exactly 42 characters long
+    table.string(Transaction.TX_HASH, 66); //   TODO: Add check hash is exactly 66 characters long
+    table.json(Transaction.METADATA);
+
+    table
+      .foreign(Transaction.USERNAME)
+      .references(User.USERNAME)
+      .inTable(Tables.USER)
+      .onDelete("CASCADE");
+
+    table
+      .foreign([
+        Transaction.ICO_NAME,
+        Transaction.ICO_OWNER,
+        Transaction.ICO_OWNER
+      ])
+      .references([ICO.NAME, ICO.OWNER, ICO.OWNER_ADDR])
+      .inTable(Tables.ICO)
+      .onDelete("CASCADE");
+
+    table.primary([
+      Transaction.USERNAME,
       Transaction.ICO_NAME,
       Transaction.ICO_OWNER,
-      Transaction.ICO_OWNER
-    ])
-    .references([ICO.NAME, ICO.OWNER, ICO.OWNER_ADDR])
-    .inTable(Tables.ICO)
-    .onDelete("CASCADE");
-
-  table.primary([
-    Transaction.USERNAME,
-    Transaction.ICO_NAME,
-    Transaction.ICO_OWNER,
-    Transaction.TO_ADDR,
-    Transaction.TX_HASH
-  ]);
+      Transaction.TO_ADDR,
+      Transaction.TX_HASH
+    ]);
+  };
 }
-
-export { generateTable };
