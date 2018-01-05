@@ -2,6 +2,7 @@ import { Config, ConnectionConfig } from "knex";
 import * as knexDep from "knex";
 
 // Better way to do this?
+import { ITable } from "./models";
 import Models from "./models/";
 const { Tables, Columns } = Models;
 
@@ -17,6 +18,7 @@ const DEBUG: boolean = true;
 export default class Database {
   private static db;
   private static connection: ConnectionConfig;
+  private tables: [ITable];
 
   constructor(config: ConnectionConfig) {
     if (config !== Database.connection) {
@@ -25,6 +27,15 @@ export default class Database {
       );
     }
     Database.connection = config;
+
+    this.tables = [
+      UserTable,
+      CoinTable,
+      ICOTable,
+      ParticipatesTable,
+      TransactionTable,
+      ExchangeTable
+    ];
   }
 
   public connect = async () => {
@@ -59,25 +70,16 @@ export default class Database {
 
     try {
       const tableGen = [
-        new UserTable(),
-        new CoinTable(),
-        new ICOTable(),
-        new ParticipatesTable(),
-        new TransactionTable(),
-        new ExchangeTable()
+        UserTable,
+        CoinTable,
+        ICOTable,
+        ParticipatesTable,
+        TransactionTable,
+        ExchangeTable
       ];
 
-      const tableStr = [
-        Tables.USER,
-        Tables.COIN,
-        Tables.ICO,
-        Tables.PARTICIPATES_ICO,
-        Tables.TRANSACTION,
-        Tables.EXCHANGE
-      ];
-
-      for (const fn of tableGen) {
-        await fn.generateTable(Database.db);
+      for (const table of tableGen) {
+        await this.generateTable(table);
       }
     } catch (err) {
       console.log("Error generating tables", err);
@@ -116,5 +118,14 @@ export default class Database {
     } catch (err) {
       console.log("Drop all tables failed", err);
     }
+  };
+
+  private generateTable = (table: ITable) => {
+    return Database.db.schema.hasTable(table.tName).then(exists => {
+      if (!exists) {
+        return Database.db.schema.createTable(table.tName, table.tableSchema);
+      }
+      return Promise.resolve();
+    });
   };
 }

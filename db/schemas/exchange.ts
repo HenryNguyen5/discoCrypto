@@ -1,26 +1,12 @@
-import { ITableInterface } from "../models/";
+import { ITable } from "../models/";
 import Models from "../models/"; // Better way to do this?
 const { Tables, Columns } = Models;
 
 // Might want to use inheritance for this
-export default class ExchangeTable implements ITableInterface {
-  public tName = Tables.EXCHANGE;
-  public cNames;
-
-  constructor() {
-    this.cNames = ["default"];
-  }
-
-  public generateTable = db => {
-    return db.schema.hasTable(this.tName).then(exists => {
-      if (!exists) {
-        return db.schema.createTable(this.tName, this.tableSchema);
-      }
-      return Promise.resolve;
-    });
-  };
-
-  private tableSchema = table => {
+const ExchangeTable: ITable = {
+  tName: Tables.EXCHANGE,
+  cNames: ["default"],
+  tableSchema: table => {
     const { Coin, Exchange } = Columns;
 
     table.string(Exchange.EXCHANGE_NAME).notNullable();
@@ -48,5 +34,7 @@ export default class ExchangeTable implements ITableInterface {
       Exchange.BASE_UNIT,
       Exchange.DATE
     ]);
-  };
-}
+  }
+};
+
+export default ExchangeTable;

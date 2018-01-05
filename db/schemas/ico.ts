@@ -1,26 +1,12 @@
-import { ITableInterface } from "../models/";
+import { ITable } from "../models/";
 import Models from "../models/"; // Better way to do this?
 const { Tables, Columns } = Models;
 
 // Might want to use inheritance for this
-export default class ICOTable implements ITableInterface {
-  public tName = Tables.ICO;
-  public cNames;
-
-  constructor() {
-    this.cNames = ["default"];
-  }
-
-  public generateTable = db => {
-    return db.schema.hasTable(this.tName).then(exists => {
-      if (!exists) {
-        return db.schema.createTable(this.tName, this.tableSchema);
-      }
-      return Promise.resolve;
-    });
-  };
-
-  private tableSchema = table => {
+const ICOTable: ITable = {
+  tName: Tables.ICO,
+  cNames: ["default"],
+  tableSchema: table => {
     const { ICO, User } = Columns;
 
     table.string(ICO.NAME, 100).notNullable();
@@ -44,5 +30,7 @@ export default class ICOTable implements ITableInterface {
       .inTable(Tables.USER)
       .onDelete("CASCADE"); // Should probably change this
     table.primary([ICO.NAME, ICO.OWNER, ICO.OWNER_ADDR]);
-  };
-}
+  }
+};
+
+export default ICOTable;

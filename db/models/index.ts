@@ -9,5 +9,5 @@ import { User } from "./user";
 const Columns = { Coin, Exchange, ICO, ParticipatesICO, Transaction, User };
 const { Tables } = TableInfo;
 
-export { ITableInterface } from "./tables";
+export { ITable } from "./tables";
 export default { Columns, Tables };
