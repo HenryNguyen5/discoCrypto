@@ -6,6 +6,15 @@ enum Exchange {
   PRICE = "price"
 }
 
-// TODO: Add other interfaces for Exchange queries/interactions
+interface IExchangePrimary {
+  exchange_name: string;
+  coin_name: string;
+  base_unit: string;
+  date: Date;
+}
 
-export { Exchange };
+interface IExchangeData extends IExchangePrimary {
+  price: number;
+}
+
+export { Exchange, IExchangePrimary, IExchangeData };

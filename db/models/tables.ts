@@ -11,5 +11,6 @@ export interface ITable {
   tName: Tables;
   cNames: string[]; // Could import proper types but creates circular dependency - also not sure if this property is necessary yet
   tableSchema(table: any); // TODO: Use knex table obects as type
-  // TODO: Add basic universal table queries
+  instanceOfPrimary(object: object);
+  instanceOfData(object: object);
 }

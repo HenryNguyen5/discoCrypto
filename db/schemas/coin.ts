@@ -1,6 +1,5 @@
-import { ITable } from "../models/";
-import Models from "../models/"; // Better way to do this?
-const { Tables, Columns } = Models;
+import { ICoinData, ICoinPrimary, ITable } from "../models";
+import { Columns, Tables } from "../models/";
 
 // Might want to use inheritance for this
 const CoinTable: ITable = {
@@ -12,6 +11,12 @@ const CoinTable: ITable = {
     table.string(Coin.NAME, 100).notNullable();
     table.string(Coin.TICKER, 6).notNullable();
     table.primary([Coin.NAME]);
+  },
+  instanceOfPrimary: object => {
+    return object.hasOwnProperty("name");
+  },
+  instanceOfData: object => {
+    return this.instanceOfPrimary(object) && object.hasOwnProperty("ticker");
   }
 };
 

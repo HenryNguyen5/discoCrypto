@@ -11,6 +11,20 @@ enum ICO {
   METADATA = "metadata"
 }
 
-// TODO: Add other interfaces for ICO queries/interactions
+interface IICOPrimary {
+  name: string;
+  owner: string;
+  owner_addr: string;
+}
 
-export { ICO };
+interface IICOData extends IICOPrimary {
+  ticker: string;
+  deadline: Date;
+  min_total: number;
+  max_total: number;
+  min_indvidual: number;
+  max_indvidual: number;
+  metadata: object;
+}
+
+export { ICO, IICOPrimary, IICOData };

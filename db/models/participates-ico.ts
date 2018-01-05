@@ -8,6 +8,17 @@ enum ParticipatesICO {
   DATE = "date"
 }
 
-// TODO: Add other interfaces for Coin queries/interactions
+interface IParticipatesPrimary {
+  username: string;
+  ico_name: string;
+  ico_owner: string;
+}
 
-export { ParticipatesICO };
+interface IParticipatesData extends IParticipatesPrimary {
+  to_addr: string;
+  from_addr: string;
+  amount: number;
+  date: Date;
+}
+
+export { ParticipatesICO, IParticipatesPrimary, IParticipatesData };

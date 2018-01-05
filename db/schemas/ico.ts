@@ -1,6 +1,5 @@
-import { ITable } from "../models/";
-import Models from "../models/"; // Better way to do this?
-const { Tables, Columns } = Models;
+import { IICOData, IICOPrimary, ITable } from "../models/";
+import { Columns, Tables } from "../models/";
 
 // Might want to use inheritance for this
 const ICOTable: ITable = {
@@ -30,6 +29,25 @@ const ICOTable: ITable = {
       .inTable(Tables.USER)
       .onDelete("CASCADE"); // Should probably change this
     table.primary([ICO.NAME, ICO.OWNER, ICO.OWNER_ADDR]);
+  },
+  instanceOfPrimary: object => {
+    return (
+      object.hasOwnProperty("name") &&
+      object.hasOwnProperty("owner") &&
+      object.hasOwnProperty("owner_addr")
+    );
+  },
+  instanceOfData: object => {
+    return (
+      this.instanceOfPrimary(object) &&
+      object.hasOwnProperty("ticker") &&
+      object.hasOwnProperty("deadline") &&
+      object.hasOwnProperty("min_total") &&
+      object.hasOwnProperty("max_total") &&
+      object.hasOwnProperty("min_individual") &&
+      object.hasOwnProperty("max_individual") &&
+      object.hasOwnProperty("metadata")
+    );
   }
 };
 

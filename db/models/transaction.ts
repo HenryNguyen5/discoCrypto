@@ -7,6 +7,16 @@ enum Transaction {
   METADATA = "metadata"
 }
 
-// TODO: Add other interfaces for Transaction queries/interactions
+interface ITransactionPrimary {
+  username: string;
+  ico_name: string;
+  ico_owner: string;
+  to_address: string;
+  txhash: string;
+}
 
-export { Transaction };
+interface ITransactionData extends ITransactionPrimary {
+  metadata: object;
+}
+
+export { Transaction, ITransactionPrimary, ITransactionData };

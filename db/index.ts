@@ -1,17 +1,23 @@
+/* Imports */
+
 import { Config, ConnectionConfig } from "knex";
 import * as knexDep from "knex";
 
-// Better way to do this?
+// Interface Importing
 import { ITable } from "./models";
-import Models from "./models/";
-const { Tables, Columns } = Models;
 
+// Enum Importing
+import { Columns, Tables } from "./models/";
+
+// Table Object Importing
 import CoinTable from "./schemas/coin";
 import ExchangeTable from "./schemas/exchange";
 import ICOTable from "./schemas/ico";
 import ParticipatesTable from "./schemas/participates-ico";
 import TransactionTable from "./schemas/transaction";
 import UserTable from "./schemas/user";
+
+/* End Imports */
 
 const DEBUG: boolean = true;
 
@@ -27,8 +33,8 @@ export default class Database {
       );
     }
     Database.connection = config;
-
     this.tables = [
+      // Tables stored in DB here (order matters - FKs)
       UserTable,
       CoinTable,
       ICOTable,
@@ -69,21 +75,38 @@ export default class Database {
     console.log("Commencing table validation/generation");
 
     try {
-      const tableGen = [
-        UserTable,
-        CoinTable,
-        ICOTable,
-        ParticipatesTable,
-        TransactionTable,
-        ExchangeTable
-      ];
-
-      for (const table of tableGen) {
+      // Sequentially execute table generation as FKs depend on other tables
+      for (const table of this.tables) {
         await this.generateTable(table);
       }
     } catch (err) {
       console.log("Error generating tables", err);
     }
+  };
+
+  // Selects a single entry by object of primary keys
+  public selectByPK = async (table: Tables, data: any) => {
+    const sTable = this.selectedTable(table);
+
+    // Might mess up flow
+    if (!sTable.instanceOfPrimary(data)) {
+      throw new Error(`Invalid Primary Keys for Selected Table=${table}`);
+    }
+
+    return await Database.db(table).where(data).select();
+  };
+
+  // Inserts data into table
+  public insert = async (table: Tables, data: any) => {
+    const sTable = this.selectedTable(table);
+
+    // Might mess up flow
+    if (!sTable.instanceOfData(data)) {
+      // Possible null values would break this if statement
+      throw new Error(`Invalid data for selected Table=${table}`);
+    }
+
+    return await Database.db(table).insert(data);
   };
 
   get db() {
@@ -127,5 +150,15 @@ export default class Database {
       }
       return Promise.resolve();
     });
+  };
+
+  private selectedTable = (table: Tables) => {
+    for (const t of this.tables) {
+      if (t.tName === table) {
+        return t;
+      }
+    }
+
+    throw new Error("Bad table specified");
   };
 }

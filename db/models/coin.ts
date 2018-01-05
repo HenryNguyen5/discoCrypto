@@ -3,6 +3,12 @@ enum Coin {
   TICKER = "ticker"
 }
 
-// TODO: Add other interfaces for Coin queries/interactions
+interface ICoinPrimary {
+  name: string;
+}
 
-export { Coin };
+interface ICoinData extends ICoinPrimary {
+  ticker: string;
+}
+
+export { Coin, ICoinPrimary, ICoinData };

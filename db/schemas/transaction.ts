@@ -1,6 +1,5 @@
-import { ITable } from "../models/";
-import Models from "../models/"; // Better way to do this?
-const { Tables, Columns } = Models;
+import { ITable, ITransactionData, ITransactionPrimary } from "../models/";
+import { Columns, Tables } from "../models/"; // Better way to do this?
 
 // Might want to use inheritance for this
 const TransactionTable: ITable = {
@@ -39,6 +38,18 @@ const TransactionTable: ITable = {
       Transaction.TO_ADDR,
       Transaction.TX_HASH
     ]);
+  },
+  instanceOfPrimary: object => {
+    return (
+      object.hasOwnProperty("username") &&
+      object.hasOwnProperty("ico_name") &&
+      object.hasOwnProperty("ico_owner") &&
+      object.hasOwnProperty("to_address") &&
+      object.hasOwnProperty("txhash")
+    );
+  },
+  instanceOfData: object => {
+    return this.instanceOfPrimary(object) && object.hasOwnProperty("metadata");
   }
 };
 

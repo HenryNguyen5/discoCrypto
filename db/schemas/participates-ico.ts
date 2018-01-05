@@ -1,6 +1,5 @@
-import { ITable } from "../models/";
-import Models from "../models/"; // Better way to do this?
-const { Tables, Columns } = Models;
+import { IParticipatesData, IParticipatesPrimary, ITable } from "../models/";
+import { Columns, Tables } from "../models/"; // Better way to do this?
 
 // Might want to use inheritance for this
 const ParticipatesTable: ITable = {
@@ -42,6 +41,22 @@ const ParticipatesTable: ITable = {
       ParticipatesICO.ICO_OWNER,
       ParticipatesICO.TO_ADDR
     ]);
+  },
+  instanceOfPrimary: object => {
+    return (
+      object.hasOwnProperty("username") &&
+      object.hasOwnProperty("ico_name") &&
+      object.hasOwnProperty("ico_owner")
+    );
+  },
+  instanceOfData: object => {
+    return (
+      this.instanceOfPrimary(object) &&
+      object.hasOwnProperty("to_addr") &&
+      object.hasOwnProperty("from_addr") &&
+      object.hasOwnProperty("amount") &&
+      object.hasOwnProperty("date")
+    );
   }
 };
 

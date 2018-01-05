@@ -4,6 +4,13 @@ enum User {
   VERIFIED = "verified"
 }
 
-// TODO: Add other interfaces for User queries/interactions
+interface IUserPrimary {
+  username: string;
+}
 
-export { User };
+interface IUserData extends IUserPrimary {
+  alias: string;
+  verified: string;
+}
+
+export { User, IUserPrimary, IUserData };

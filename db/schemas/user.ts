@@ -1,6 +1,5 @@
-import { ITable } from "../models/";
-import Models from "../models/"; // Better way to do this?
-const { Tables, Columns } = Models;
+import { ITable, IUserData, IUserPrimary } from "../models/";
+import { Columns, Tables } from "../models/"; // Better way to do this?
 
 // Might want to use inheritance for this
 const UserTable: ITable = {
@@ -14,6 +13,18 @@ const UserTable: ITable = {
     table.boolean(User.VERIFIED).notNullable().defaultTo(false);
 
     table.primary([User.USERNAME]);
+  },
+  instanceOfPrimary: object => {
+    return object.hasOwnProperty("username");
+  },
+  instanceOfData: object => {
+    // TODO: Add support for arrays
+    // TODO: Use column enums
+    return (
+      this.instanceOfPrimary(object) &&
+      object.hasOwnProperty("alias") &&
+      object.hasOwnProperty("verified")
+    );
   }
 };
 
