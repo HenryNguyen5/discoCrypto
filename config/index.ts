@@ -1,13 +1,15 @@
-export default {
-  DEFAULT_GUILD_NAME: "Nocoiners Get Out",
+export const DISCORD_CONFIG = {
+  DEFAULT_GUILD_NAME: "TestServer",
   DEFAULT_CHANNEL_NAME: "general",
-  DISCORD_TOKEN: null,
-  DB_CONNECTION_CONFIG: {
-    host: "default",
-    port: "default",
-    user: "default",
-    password: "default",
-    database: "default",
-    ssl: true
-  }
+  PREFIX: ".",
+  DISCORD_TOKEN: "null"
+};
+
+export const DB_CONFIG = {
+  host: "null",
+  port: "null",
+  user: "null",
+  password: "null",
+  database: "null",
+  ssl: true
 };

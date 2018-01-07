@@ -1,29 +1,17 @@
-import alert from './alert'
-import cmc from './cmc'
-import gen from './general'
-import ico from './ico'
-import personal from './personal'
-import scheduler from './sched'
-const commandObj = { alert, cmc, gen, per: personal, ico, sched: scheduler }
-const PREFIX = '.'
+import * as Discord from "discord.js";
+import { DISCORD_CONFIG } from "../config";
+const { PREFIX } = DISCORD_CONFIG;
 
-const preFixedCommandObj = Object.keys(
-	commandObj
-).reduce((prevValue, currValue) => {
-	return { ...prevValue, [`${PREFIX}${currValue}`]: commandObj[currValue] }
-}, {})
+// Commands
+import cmc from "./cmc";
+import help from "./help";
+import ngo from "./ngo";
+import ping from "./ping";
 
-const commandHandler = async command => {
-  const [commandName, option, ...rest] = command.split(/\s+/)
-  console.log(commandName, option, rest);
-	if (!preFixedCommandObj[commandName]) {
-		return null
-	}
+const commands = new Discord.Collection();
+commands.set("cmc", cmc);
+commands.set("help", help);
+commands.set("ngo", ngo);
+commands.set("ping", ping);
 
-	const result = preFixedCommandObj[commandName][option]
-	console.log(result)
-	return result(rest)
-}
-
-export default commandHandler
-export {PREFIX};
+export { commands };

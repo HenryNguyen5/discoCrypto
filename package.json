@@ -9,12 +9,14 @@
     "format-number": "^3.0.0",
     "knex": "^0.14.2",
     "pg": "^7.4.0",
-    "request": "^2.81.0",
-    "request-promise-native": "^1.0.4"
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5"
   },
   "devDependencies": {
     "@types/knex": "0.0.67",
     "@types/node": "^8.0.25",
+    "@types/request": "^2.0.9",
+    "@types/request-promise-native": "^1.0.10",
     "nodemon": "^1.12.1",
     "prettier": "^1.5.3",
     "tslint": "^5.6.0",
