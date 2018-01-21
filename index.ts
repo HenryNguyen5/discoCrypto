@@ -19,6 +19,7 @@ if (!DISCORD_TOKEN) {
   process.exit();
 }
 
+// Event handlers here
 client.on("ready", message => Events.Ready(client));
 client.on("message", async message => Events.Message(client, message));
 

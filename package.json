@@ -9,6 +9,8 @@
     "format-number": "^3.0.0",
     "knex": "^0.14.2",
     "pg": "^7.4.0",
+    "redux": "^3.7.2",
+    "redux-saga": "^0.16.0",
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5"
   },

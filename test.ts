@@ -1,13 +1,12 @@
-import discordConfig from "./config";
+import { DB_CONFIG } from "./config";
 import Database from "./db";
 
 const test = async () => {
-  const db = new Database(discordConfig.DB_CONNECTION_CONFIG);
+  const db = new Database(DB_CONFIG);
   await db.connect().then(db.init);
   // await db.dropAllTables();
-  return db.db;
 };
 
-test().then(db => {
-  console.log("Done!");
+test().then(() => {
+  console.log("Done init");
 });

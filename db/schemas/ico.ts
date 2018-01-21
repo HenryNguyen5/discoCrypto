@@ -4,7 +4,7 @@ import { Columns, Tables } from "../models/";
 // Might want to use inheritance for this
 const ICOTable: ITable = {
   tName: Tables.ICO,
-  cNames: ["default"],
+  cNames: Columns.ICO,
   tableSchema: table => {
     const { ICO, User } = Columns;
 
@@ -32,21 +32,21 @@ const ICOTable: ITable = {
   },
   instanceOfPrimary: object => {
     return (
-      object.hasOwnProperty("name") &&
-      object.hasOwnProperty("owner") &&
-      object.hasOwnProperty("owner_addr")
+      object.hasOwnProperty(this.cNames.NAME) &&
+      object.hasOwnProperty(this.cNames.OWNER) &&
+      object.hasOwnProperty(this.cNames.OWNER_ADDR)
     );
   },
   instanceOfData: object => {
     return (
       this.instanceOfPrimary(object) &&
-      object.hasOwnProperty("ticker") &&
-      object.hasOwnProperty("deadline") &&
-      object.hasOwnProperty("min_total") &&
-      object.hasOwnProperty("max_total") &&
-      object.hasOwnProperty("min_individual") &&
-      object.hasOwnProperty("max_individual") &&
-      object.hasOwnProperty("metadata")
+      object.hasOwnProperty(this.cNames.TICKER) &&
+      object.hasOwnProperty(this.cNames.DEADLINE) &&
+      object.hasOwnProperty(this.cNames.MIN_TOTAL) &&
+      object.hasOwnProperty(this.cNames.MAX_TOTAL) &&
+      object.hasOwnProperty(this.cNames.MIN_INDIVIDUAL) &&
+      object.hasOwnProperty(this.cNames.MAX_INDIVIDUAL) &&
+      object.hasOwnProperty(this.cNames.METADATA)
     );
   }
 };

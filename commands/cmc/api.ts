@@ -1,57 +1,88 @@
 import * as request from "request-promise-native";
 
+const BASE_URL = "https://api.coinmarketcap.com/v1";
 const MINUTE = 1000 * 60;
-// cmc updates endpoints every 5 minutes
-const FIVE_MINUTES = MINUTE * 5;
+const FIVE_MINUTES = MINUTE * 5; // cmc updates endpoints every 5 minutes
 const DAY = MINUTE * 60 * 24;
 
-let tickers = {};
-let symbols = {};
-let globalMarketData = {};
-
-const cmc = request.defaults({
-  baseUrl: "https://api.coinmarketcap.com/v1",
+const reqBase = request.defaults({
+  baseUrl: BASE_URL,
   json: true
 });
 
-const lookupCoin = (id: string) => {
-  const coinTicker = id.toLowerCase();
-  const coinSymbol = id.toUpperCase();
-  return tickers[coinTicker] || symbols[coinSymbol];
-};
+async function requestGlobalData() {
+  return await reqBase.get("/global");
+}
 
-const updateCmcCache = async () => {
-  const ethBtcPrice = await cmc
-    .get("/ticker/ethereum")
-    .then(([{ price_btc }]) => price_btc);
+async function requestCoinData(limit: number) {
+  return await reqBase.get(`/ticker?limit=${limit}`);
+}
 
-  // limit = 0 gets all coins
-  const coinArray = await cmc.get(`/ticker?limit=500`).then(async allcoins =>
-    allcoins.map(coin => ({
-      ...coin,
-      price_eth: `${(parseFloat(coin.price_btc) /
-        parseFloat(ethBtcPrice)).toFixed(8)}`
-    }))
-  );
+async function requestCoinByID(id: string) {
+  return await reqBase.get(`/ticker/${id}`);
+}
 
-  tickers = coinArray.reduce(
-    (coins, currCoin) => ({ ...coins, [currCoin.id]: currCoin }),
-    {}
-  );
+// const updateCmcCache = async () => {
+//   tickers = coinArray.reduce(
+//     (coins, currCoin) => ({ ...coins, [currCoin.id]: currCoin }),
+//     {}
+//   );
 
-  symbols = coinArray.reduce(
-    (coins, currCoin) => ({ ...coins, [currCoin.symbol]: currCoin }),
-    {}
-  );
+//   symbols = coinArray.reduce(
+//     (coins, currCoin) => ({ ...coins, [currCoin.symbol]: currCoin }),
+//     {}
+//   );
+// };
 
-  globalMarketData = await cmc.get("/global");
-};
+export { requestCoinByID, requestCoinData, requestGlobalData };
 
-updateCmcCache();
+class CoinMarketCapCache {
+  private coins: any;
+  private global: any;
 
-setInterval(() => {
-  console.log("Five Minutes elapsed: Updating cache");
-  updateCmcCache();
-}, FIVE_MINUTES);
+  constructor() {
+    this.Monitor();
+  }
 
-export { lookupCoin, globalMarketData };
+  // Monitors coin market cap indefinitely
+  private Monitor() {
+    function getGlobal() {
+      return requestGlobalData();
+    }
+
+    function getTickers() {
+      return requestCoinData(500);
+    }
+
+    const intervalFxn = async () => {
+      const global = await getGlobal();
+
+      if (global.success) {
+        this.global = global;
+      }
+
+      const coins = await getTickers();
+
+      if (coins.success) {
+        this.coins = this.parseCoins(coins.result);
+      }
+    };
+
+    setInterval(intervalFxn, FIVE_MINUTES);
+  }
+
+  private parseCoins(response) {
+    let ethBtcPrice: string = "1";
+
+    ethBtcPrice = response.find(e => {
+      return e.id === "ethereum";
+    }).price_btc;
+
+    this.coins = response.map(c => ({
+      ...c,
+      price_eth: `${(parseFloat(c.price_btc) / parseFloat(ethBtcPrice)).toFixed(
+        8
+      )}`
+    }));
+  }
+}

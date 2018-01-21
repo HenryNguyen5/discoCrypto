@@ -4,7 +4,7 @@ import { Columns, Tables } from "../models/"; // Better way to do this?
 // Might want to use inheritance for this
 const TransactionTable: ITable = {
   tName: Tables.TRANSACTION,
-  cNames: ["default"],
+  cNames: Columns.Transaction,
   tableSchema: table => {
     const { ICO, Transaction, User } = Columns;
 
@@ -41,15 +41,18 @@ const TransactionTable: ITable = {
   },
   instanceOfPrimary: object => {
     return (
-      object.hasOwnProperty("username") &&
-      object.hasOwnProperty("ico_name") &&
-      object.hasOwnProperty("ico_owner") &&
-      object.hasOwnProperty("to_address") &&
-      object.hasOwnProperty("txhash")
+      object.hasOwnProperty(this.cNames.USERNAME) &&
+      object.hasOwnProperty(this.cNames.ICO_NAME) &&
+      object.hasOwnProperty(this.cNames.ICO_OWNER) &&
+      object.hasOwnProperty(this.cNames.TO_ADDR) &&
+      object.hasOwnProperty(this.cNames.TX_HASH)
     );
   },
   instanceOfData: object => {
-    return this.instanceOfPrimary(object) && object.hasOwnProperty("metadata");
+    return (
+      this.instanceOfPrimary(object) &&
+      object.hasOwnProperty(this.cNames.METADATA)
+    );
   }
 };
 

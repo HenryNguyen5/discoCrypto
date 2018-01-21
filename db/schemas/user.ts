@@ -4,7 +4,7 @@ import { Columns, Tables } from "../models/"; // Better way to do this?
 // Might want to use inheritance for this
 const UserTable: ITable = {
   tName: Tables.USER,
-  cNames: ["default"],
+  cNames: Columns.User,
   tableSchema: table => {
     const { User } = Columns;
 
@@ -15,15 +15,14 @@ const UserTable: ITable = {
     table.primary([User.USERNAME]);
   },
   instanceOfPrimary: object => {
-    return object.hasOwnProperty("username");
+    return object.hasOwnProperty(this.cNames.USERNAME);
   },
   instanceOfData: object => {
     // TODO: Add support for arrays
-    // TODO: Use column enums
     return (
       this.instanceOfPrimary(object) &&
-      object.hasOwnProperty("alias") &&
-      object.hasOwnProperty("verified")
+      object.hasOwnProperty(this.cNames.ALIAS) &&
+      object.hasOwnProperty(this.cNames.VERIFIED)
     );
   }
 };

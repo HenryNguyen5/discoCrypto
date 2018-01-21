@@ -4,7 +4,7 @@ import { Columns, Tables } from "../models/"; // Better way to do this?
 // Might want to use inheritance for this
 const ParticipatesTable: ITable = {
   tName: Tables.PARTICIPATES_ICO,
-  cNames: ["default"],
+  cNames: Columns.ParticipatesICO,
   tableSchema: table => {
     const { ICO, ParticipatesICO, User } = Columns;
 
@@ -44,18 +44,18 @@ const ParticipatesTable: ITable = {
   },
   instanceOfPrimary: object => {
     return (
-      object.hasOwnProperty("username") &&
-      object.hasOwnProperty("ico_name") &&
-      object.hasOwnProperty("ico_owner")
+      object.hasOwnProperty(this.cNames.USERNAME) &&
+      object.hasOwnProperty(this.cNames.ICO_NAME) &&
+      object.hasOwnProperty(this.cNames.ICO_OWNER)
     );
   },
   instanceOfData: object => {
     return (
       this.instanceOfPrimary(object) &&
-      object.hasOwnProperty("to_addr") &&
-      object.hasOwnProperty("from_addr") &&
-      object.hasOwnProperty("amount") &&
-      object.hasOwnProperty("date")
+      object.hasOwnProperty(this.cNames.TO_ADDR) &&
+      object.hasOwnProperty(this.cNames.FROM_ADDR) &&
+      object.hasOwnProperty(this.cNames.AMOUNT) &&
+      object.hasOwnProperty(this.cNames.DATE)
     );
   }
 };

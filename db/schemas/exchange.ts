@@ -4,7 +4,7 @@ import { Columns, Tables } from "../models/";
 // Might want to use inheritance for this
 const ExchangeTable: ITable = {
   tName: Tables.EXCHANGE,
-  cNames: ["default"],
+  cNames: Columns.Exchange,
   tableSchema: table => {
     const { Coin, Exchange } = Columns;
 
@@ -36,14 +36,16 @@ const ExchangeTable: ITable = {
   },
   instanceOfPrimary: object => {
     return (
-      object.hasOwnProperty("exchnage_name") &&
-      object.hasOwnProperty("coin_name") &&
-      object.hasOwnProperty("base_unit") &&
-      object.hasOwnProperty("date")
+      object.hasOwnProperty(this.cNames.EXCHANGE_NAME) &&
+      object.hasOwnProperty(this.cNames.COIN_NAME) &&
+      object.hasOwnProperty(this.cNames.BASE_UNIT) &&
+      object.hasOwnProperty(this.cNames.DATE)
     );
   },
   instanceOfData: object => {
-    return this.instanceOfPrimary(object) && object.hasOwnProperty("number");
+    return (
+      this.instanceOfPrimary(object) && object.hasOwnProperty(this.cNames.PRICE)
+    );
   }
 };
 

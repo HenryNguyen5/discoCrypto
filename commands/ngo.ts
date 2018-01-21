@@ -1,8 +1,8 @@
 export default (client, message, args) => {
   switch (args[0]) {
     case "gtfo":
-      message.channel.send(ngo());
     default:
+      message.channel.send(ngo());
   }
 };
 
