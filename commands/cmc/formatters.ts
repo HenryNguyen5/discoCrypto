@@ -1,17 +1,6 @@
 import { flatten, formatting } from "../../util/formatting";
 import { lookupCoin } from "../cmc/api";
-interface ICoin {
-  rank;
-  name;
-  symbol;
-  price_usd;
-  price_btc;
-  price_eth;
-  percent_change_1h;
-  percent_change_24h;
-  percent_change_7d;
-  market_cap_usd;
-}
+
 interface IPortfolioEntry {
   name;
   symbol;
