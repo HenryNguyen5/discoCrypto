@@ -1,23 +1,23 @@
-import { globalMarketData, lookupCoin } from "./api";
+import { store } from "../../store";
+import { getCoinFromCache } from "../../store/cache";
 import { statsEmbed, tickerEmbed } from "./formatters";
-
-const stats = () => statsEmbed(globalMarketData);
-
-const ticker = query => {
-  const coinData = lookupCoin(query);
-  return coinData ? tickerEmbed(coinData) : coinNotFound();
-};
 
 export default (client, message, args) => {
   switch (args[0]) {
     // TODO: Support multiple tickers
     case "t":
     case "ticker":
-      message.channel.send(ticker(args[1] || "BITB"));
+      const coin = getCoinFromCache(store.getState(), args[1] || "BITB");
+      if (!coin) {
+        message.channel.send("Coin not found");
+        break;
+      }
+      message.channel.send(tickerEmbed(coin));
+
       break;
     case "s":
     case "stats":
-      message.channel.send(stats());
+      message.channel.send("Not Working :)");
       break;
     case "r":
     case "rank":

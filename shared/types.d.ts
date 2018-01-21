@@ -5,7 +5,6 @@ interface ICMCCoin {
   name: string;
   price_usd: string;
   price_btc: string;
-
   volume_usd_24_h: string;
   market_cap_usd: string;
   available_supply: string;
@@ -31,6 +30,10 @@ interface IAction {
 type ReducerMapObj<T extends IAction, S> = {
   [key in T["type"]]: ReducerFunc<S, T>
 };
+
+interface IAppState {
+  cache: ICoinState;
+}
 
 // "id": "entcash",
 // "name": "ENTCash",
